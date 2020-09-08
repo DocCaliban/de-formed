@@ -10,7 +10,7 @@ type WrapperProps = {
   state: any;
 }
 
-export const InputWrapper = (v: any) => {
+export const InputWrapper = (v: ValidationObject) => {
   const Wrapper: FC<WrapperProps> = (props) => {
     const { label, onChange, name, state } = props;
 
@@ -31,6 +31,7 @@ export const InputWrapper = (v: any) => {
     return (
       <React.Fragment>
         <label htmlFor={name}>{label}</label>
+        <br />
         <input key={name} id={name} {...modifiedProps} />
         <p style={{ color: 'red' }}>{v.getError(name)}</p>
       </React.Fragment>

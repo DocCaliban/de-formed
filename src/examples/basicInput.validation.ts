@@ -1,4 +1,5 @@
 import {useValidation} from 'validation.hook';
+import {isEqual} from 'util/utilities';
 
 export interface Dog {
   name: string;
@@ -11,13 +12,13 @@ export const BasicInputValidation = () => {
       {
         errorMessage: 'Cannot be Bob.',
         validation: (val: string, state: any) => {
-          return val.trim().toLowerCase() !== 'bob';
+          return !isEqual(val.trim().toLowerCase(), 'bob');
         }
       },
       {
         errorMessage: 'Cannot be Ross.',
         validation: (val: string, state: any) => {
-          return val.trim().toLowerCase() !== 'ross';
+          return !isEqual(val.trim().toLowerCase(), 'ross');
         }
       },
       {
@@ -31,7 +32,7 @@ export const BasicInputValidation = () => {
       {
         errorMessage: 'Must be a Leonberger.',
         validation: (val: string, state: any) => {
-          return val.trim().toLowerCase() === 'leonberger';
+          return isEqual(val.trim().toLowerCase(), 'leonberger');
         }
       },
       {

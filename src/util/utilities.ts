@@ -1,10 +1,5 @@
 import { curry } from 'ramda';
-import { FormEvent } from 'react';
 import {ValidationSchema} from 'validation.hook';
-
-interface KeyValuePair {
-  [key: string]: any;
-}
 
 /**
  * Creates a random 7 character string.
@@ -19,25 +14,6 @@ export const randomString = () => Math.random().toString(36).substring(7);
  */
 export const compose = (...fns: Function[]) => (x: any) =>
   fns.reduceRight((y: any, f: any) => f(y), x);
-
-/**
- *  Curried function that takes the output of an HTMLInputElement Event and
- *  wraps it into an object by the name, then executes a given function and
- *  providing the key/value pair, the name, and the raw value as parameters.
- *  @param onChange Function to be executed with the event data
- *  @param name String of what the data should bind to on an object
- *  @param event HTMLInputElement Event
- *  @return void
- */
-export const handleChange = curry(
-  (onChange: Function, name: string, event: FormEvent<HTMLInputElement>) => {
-    let data: KeyValuePair = {};
-    if (!event) return;
-    const { value } = event.currentTarget;
-    data[name] = value;
-    onChange(data, name, value);
-  }
-);
 
 // Build Validation State Object
 export const createValidationsState = (schema: ValidationSchema) => {
