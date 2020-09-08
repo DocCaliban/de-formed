@@ -1,72 +1,27 @@
 import React, { useState } from 'react';
-import {BasicInputValidation, Dog} from 'examples/basicInput.validation';
-import {handleChange, randomString } from 'util/utilities';
+import {BasicInputValidation} from 'examples/basicInput.validation';
+import {InputWrapper} from 'withValidationComponent';
+import { curry } from 'ramda';
 
 function App() {
-  const [state, setState] = useState<Dog>({
-    name: '',
-    breed: '',
-  });
+  const [state, setState] = useState<{name: string}>({ name: '' });
 
-  const styles = {
-    position: 'absolute',
-    width: '100%',
-    display: 'block',
-    padding: '10rem'
-  };
-
-  const {
-    getError,
-    getFieldValid,
-    validate,
-    validateIfTrue,
-    validateAll
-  } = BasicInputValidation();
-
-  const onChange = handleChange((data: any, key: string, value: any) => {
-    validateIfTrue(key, value, state);
+  const onChange = curry((name: string, event: any) => {
+    const data = { [name]: event.target.value }
     setState({ ...state, ...data });
-  });
+  })
 
-  const getPattern = (key: string, state: any) => {
-    return getFieldValid(key)
-      ? `${state[key]}`
-      : `${randomString()}`
-  };
+  const v = BasicInputValidation();
+  const HOC = InputWrapper(v);
 
   return (
     <>
-      <div style={styles as any}>
-        <h3>Dog</h3>
-
-        <label>Name</label>
-        <br />
-        <input
-          key="name"
-          onBlur={() => validate('name', state.name, state)}
-          onChange={onChange('name')}
-          pattern={getPattern('name', state)}
-          type="text" 
-          value={state.name}
-        />
-        <p style={{ color: 'red' }}>{getError('name')}</p>
-
-        <label>Breed</label>
-        <br />
-        <input 
-          key="breed"
-          onBlur={() => validate('breed', state.breed, state)}
-          onChange={onChange('breed')}
-          pattern={getPattern('breed', state)}
-          type="text" 
-          value={state.breed}
-        />
-        <p style={{ color: 'red' }}>{getError('breed')}</p>
-
-        <button onClick={() => validateAll(state)}>
-          Validate All
-        </button>
-      </div>
+      <HOC 
+        name="name"
+        label="Name"
+        onChange={onChange('name')}
+        state={state}
+      />
     </>
   );
 }

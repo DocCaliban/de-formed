@@ -10,7 +10,7 @@ type WrapperProps = {
   state: any;
 }
 
-export const InputWrapper = (v: ValidationObject) => {
+export const InputWrapper = (v: any) => {
   const Wrapper: FC<WrapperProps> = (props) => {
     const { label, onChange, name, state } = props;
 
