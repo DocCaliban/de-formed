@@ -48,17 +48,28 @@ export const BasicInputValidation = () => {
 ```
 Wherever you need to validate an input, just import the function and grab whatever you want off the hook's output:
 ```tsx
-<h3>Dog</h3>
+const {
+  getError,
+  getFieldValid,
+  validate,
+  validateIfTrue,
+  validateAll
+} = BasicInputValidation();
 
-<label>Name</label>
-<input
-  key="name"
-  onBlur={() => validate('name', state.name, state)}
-  onChange={onChange('name')}
-  type="text" 
-  value={state.name}
-/>
-<p style={{ color: 'red' }}>{getError('name')}</p>
+return (
+  <>
+    <h3>Dog</h3>
+    <label>Name</label>
+    <input
+      key="name"
+      onBlur={() => validate('name', state.name, state)}
+      onChange={onChange('name')}
+      type="text" 
+      value={state.name}
+    />
+    <p style={{ color: 'red' }}>{getError('name')}</p>
+  </>
+);
 ```
 Available API options: 
 ```
