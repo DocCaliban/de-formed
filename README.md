@@ -73,11 +73,12 @@ return (
 ```
 Available API options: 
 ```
-getError        --> current error message for a field
-getFieldValid   --> returns whether a specific field is valid
-isValid         --> boolean that represents if all fields in hook valid
-validate        --> function that validates a single field
-validateAll     --> function that validates all keys in hook
-validateIfTrue  --> function that updates hook if the validation passes (useful for onChange events)
-validationState --> object that contains isValid and errorMessage for each field
+getError          --> current error message for a field
+getFieldValid     --> returns whether a specific field is valid
+isValid           --> boolean that represents if all fields in hook valid
+validate          --> function that validates a single field
+validateAll       --> function that validates all keys in hook
+validateIfTrue    --> function that updates hook if the validation passes (useful for onChange events)
+validationErrors  --> list of active validation errors
+validationState   --> object that contains isValid and errorMessage for each field
 ```
