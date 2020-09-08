@@ -1,5 +1,5 @@
 Create a file to define your validations:
-```
+```ts
 import {useValidation} from 'validation.hook';
 
 export interface Dog {
@@ -47,7 +47,7 @@ export const BasicInputValidation = () => {
 };
 ```
 Wherever you need to validate an input, just import the function and grab whatever you want off the hook's output:
-```
+```tsx
 <h3>Dog</h3>
 
 <label>Name</label>
