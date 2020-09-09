@@ -111,6 +111,7 @@ isValid           --> boolean that represents if all fields in hook valid
 validate          --> function that validates a single field
 validateAll       --> function that validates all keys in hook
 validateIfTrue    --> function that updates hook if the validation passes (useful for onChange events)
+validateOnBlur    --> function that returns a new function which will update the validation state
 validateOnChange  --> function that returns a new function which will update the validation state
 validationErrors  --> list of active validation errors
 validationState   --> object that contains isValid and errorMessage for each field
