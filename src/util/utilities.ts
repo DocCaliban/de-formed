@@ -1,5 +1,4 @@
 import { curry } from 'ramda';
-import {ValidationSchema} from 'validation.hook';
 
 /**
  * Creates a random 7 character string.
@@ -14,21 +13,6 @@ export const randomString = () => Math.random().toString(36).substring(7);
  */
 export const compose = (...fns: Function[]) => (x: any) =>
   fns.reduceRight((y: any, f: any) => f(y), x);
-
-// Build Validation State Object
-export const createValidationsState = (schema: ValidationSchema) => {
-  const keys = Object.keys(schema);
-  return keys.reduce(
-    (prev: any, item: string) => {
-      prev[item] = {
-        isValid: true,
-        error: ''
-      };
-      return prev;
-    },
-    {}
-  );
-};
 
 // debug
 export const trace = curry((txt: string, x: any) => {
