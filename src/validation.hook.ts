@@ -118,13 +118,16 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
 
   /**
    * Runs all validations against an object with all values and updates/returns
-   * isValid state.
+   * isValid state. 
    * @param state any an object that contains all values to be validated
+   * @param props string[] property names to check (optional)
    * @return boolean
    */
-  const validateAll = (state: S) => {
-    const keys = Object.keys(validationSchema);
-    const newState = keys.reduce((acc: any, property: string) => {
+  const validateAll = (
+    state: S,
+    props: string[] = Object.keys(validationSchema)
+  ) => {
+    const newState = props.reduce((acc: any, property: string) => {
       const r = runAllValidators(property, state[property as keyof S], state);
       acc = mergeDeepRight(acc, r);
       return acc;
