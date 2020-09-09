@@ -29,7 +29,8 @@ export interface ValidationObject {
   validate: (property: string, value: unknown, state?: any) => boolean | undefined;
   validateAll: (state: any) => boolean;
   validateIfTrue: (property: string, value: unknown, state?: any) => boolean | undefined;
-  validateOnChange: (onChange: Function, state: any) => Function;
+  validateOnBlur: (state: any) => (event: any) => any;
+  validateOnChange: (onChange: (event: any) => any, state: any) => (event: any) => any;
   validationErrors: string[];
   validationState: ValidationState;
 };
@@ -119,8 +120,8 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
   /**
    * Create a new onBlur function that calls validate on a property matching the
    * name of the event whenever a blur event happens.
-   * @param property the name of the property to retrieve
-   * @return boolean
+   * @param state the data controlling the form
+   * @return function
    */
   const validateOnBlur = (state: any) => ((event: any) => {
       const { value, name } = event.target;
@@ -131,8 +132,9 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
   /**
    * Create a new onChange function that calls validateIfTrue on a property 
    * matching the name of the event whenever a change event happens.
-   * @param property the name of the property to retrieve
-   * @return boolean
+   * @param onChange function to handle onChange events
+   * @param state the data controlling the form
+   * @return function
    */
   const validateOnChange = (onChange: Function, state: any) => (
     (event: any) => {
