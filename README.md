@@ -46,33 +46,66 @@ export const BasicInputValidation = () => {
   });
 };
 ```
-Wherever you need to validate an input, just import the function and grab whatever you want off the hook's output:
+Example Usage:
 ```tsx
-const {
-  getError,
-  getFieldValid,
-  validate,
-  validateIfTrue,
-  validateOnChange,
-  validateAll
-} = BasicInputValidation();
+import React, { useState } from 'react';
+import { BasicInputValidation } from 'examples/basicInput.validation';
 
-const handleChange = validateOnChange(onChange, state);
+function App() {
+  const [state, setState] = useState({
+    name: '',
+    breed: '',
+  });
 
-return (
-  <>
-    <h3>Dog</h3>
-    <label>Name</label>
-    <input
-      key="name"
-      onBlur={() => validate('name', state.name, state)}
-      onChange={handleChange}
-      type="text" 
-      value={state.name}
-    />
-    <p>{getError('name')}</p>
-  </>
-);
+  const v = BasicInputValidation();
+
+  const onChange = (event: any) => {
+    const { value, name } = event.target;
+    const data = { [name]: value };
+    setState({ ...state, ...data });
+  };
+
+  const handleChange = v.validateOnChange(onChange, state);
+  const handleBlur = v.validateOnBlur(state);
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    v.validateAll(state);
+  };
+
+  return (
+    <div style={{ padding: '10rem' }}>
+
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Name</label>
+          <input
+            name="name"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            value={state.name}
+          />
+          {v.getError('name') && <p>{v.getError('name')}</p>}
+        </div>
+        <div>
+          <label>Breed</label>
+          <input
+            name="breed"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            value={state.breed}
+          />
+          {v.getError('breed') && <p>{v.getError('breed')}</p>}
+        </div>
+        <button disabled={!v.isValid}>Submit</button>
+      </form>
+
+    </div>
+  );
+}
+
+export default App;
+
 ```
 Available API options: 
 ```
