@@ -29,6 +29,7 @@ export interface ValidationObject {
   validate: (property: string, value: unknown, state?: any) => boolean | undefined;
   validateAll: (state: any) => boolean;
   validateIfTrue: (property: string, value: unknown, state?: any) => boolean | undefined;
+  validateOnChange: (onChange: Function, state: any) => Function;
   validationErrors: string[];
   validationState: ValidationState;
 };
@@ -117,6 +118,20 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
   };
 
   /**
+   * Create a new onChange function that updates the validationState behind
+   * the scenes. Name must reflect the name of the input.
+   * @param property the name of the property to retrieve
+   * @return boolean
+   */
+  const validateOnChange = (onChange: Function, state: any) => (
+    (event: any) => {
+      const { value, name } = event.target;
+      validateIfTrue(name, value, state);
+      return onChange(event);
+    }
+  );
+
+  /**
    * Runs all validations against an object with all values and updates/returns
    * isValid state. 
    * @param state any an object that contains all values to be validated
@@ -171,20 +186,6 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
     }
     return true;
   };
-
-  /**
-   * Create a new onChange function that updates the validationState behind
-   * the scenes. Name must reflect the name of the input.
-   * @param property the name of the property to retrieve
-   * @return boolean
-   */
-  const validateOnChange = (onChange: Function, state: any) => (
-    (event: any) => {
-      const { value, name } = event.target;
-      validateIfTrue(name, value, state);
-      return onChange(event);
-    }
-  );
 
   // -- array of all current validation errors ----------------------------
   const validationErrors = map(getError, Object.keys(validationState));
