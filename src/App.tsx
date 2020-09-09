@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import {BasicInputValidation, Dog} from 'examples/basicInput.validation';
-import {Input} from 'Input.component';
+import { BasicInputValidation } from 'examples/basicInput.validation';
 
 function App() {
-  const [state, setState] = useState<Dog>({
+  const [state, setState] = useState({
     name: '',
     breed: '',
   });
@@ -13,33 +12,47 @@ function App() {
   const onChange = (event: any) => {
     const { value, name } = event.target;
     const data = { [name]: value };
-    v.validateIfTrue(name, value, state);
     setState({ ...state, ...data });
   };
 
-  const testValidateAll = () => {
-    return v.validateAll(state);
+  const handleChange = v.validateOnChange(onChange, state);
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    v.validateAll(state);
   };
 
   return (
     <div style={{ padding: '10rem' }}>
-      <Input 
-        label="Name"
-        name="name"
-        onChange={onChange}
-        state={state}
-        v={v}
-      />
-      <Input
-        label="Dog Breed"
-        name="breed"
-        onChange={onChange}
-        state={state}
-        v={v}
-      />
-      <button onClick={testValidateAll} disabled={!v.isValid}>
-        Submit
-      </button>
+
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="name">Name</label>
+          <input
+            id="name"
+            name="name"
+            onBlur={() => v.validate('name', state.name, state)}
+            onChange={handleChange}
+            type="text"
+            value={state.name}
+          />
+          {v.getError('name') && <p>{v.getError('name')}</p>}
+        </div>
+        <div>
+          <label htmlFor="breed">Breed</label>
+          <input
+            id="breed"
+            name="breed"
+            onBlur={() => v.validate('breed', state.breed, state)}
+            onChange={handleChange}
+            type="text"
+            value={state.breed}
+          />
+          {v.getError('breed') && <p>{v.getError('breed')}</p>}
+        </div>
+        <button disabled={!v.isValid}>Submit</button>
+      </form>
+
     </div>
   );
 }

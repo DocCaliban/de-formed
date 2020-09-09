@@ -94,7 +94,8 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
   const validate = (property: string, value: unknown, state?: S) => {
     if (property in validationSchema) {
       const validations = runAllValidators(property, value, state);
-      setValidationState(mergeDeepRight(validationState, validations));
+      const updated = mergeDeepRight(validationState, validations);
+      setValidationState(updated);
       return validations[property].isValid;
     }
   };
@@ -122,11 +123,14 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
    * @return boolean
    */
   const validateAll = (state: S) => {
-    const bools = map((property: string) => {
-      return validate(property, state[property as keyof S], state);
-    }, Object.keys(validationSchema));
-
-    const result = all(isEqual(true), bools);
+    const keys = Object.keys(validationSchema);
+    const newState = keys.reduce((acc: any, property: string) => {
+      const r = runAllValidators(property, state[property as keyof S], state);
+      acc = mergeDeepRight(acc, r);
+      return acc;
+    }, {});
+    setValidationState(newState);
+    const result = allValid(newState);
     setIsValid(result);
     return result;
   };
@@ -165,6 +169,20 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
     return true;
   };
 
+  /**
+   * Create a new onChange function that updates the validationState behind
+   * the scenes. Name must reflect the name of the input.
+   * @param property the name of the property to retrieve
+   * @return boolean
+   */
+  const validateOnChange = (onChange: Function, state: any) => (
+    (event: any) => {
+      const { value, name } = event.target;
+      validateIfTrue(name, value, state);
+      return onChange(event);
+    }
+  );
+
   // -- array of all current validation errors ----------------------------
   const validationErrors = map(getError, Object.keys(validationState));
 
@@ -185,6 +203,7 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
     validate,
     validateAll,
     validateIfTrue,
+    validateOnChange,
     validationErrors,
     validationState,
   };
