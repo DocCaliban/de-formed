@@ -84,7 +84,7 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
     const validations: ValidationState = {};
     validations[property] = { isValid, error };
     return validations;
-  }
+  };
 
   /**
    * Executes a validation function on a value and updates the validation state.
@@ -116,10 +116,21 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
       return validations[property].isValid;
     }
   };
+  /**
+   * Create a new onBlur function that calls validate on a property matching the
+   * name of the event whenever a blur event happens.
+   * @param property the name of the property to retrieve
+   * @return boolean
+   */
+  const validateOnBlur = (state: any) => ((event: any) => {
+      const { value, name } = event.target;
+      validate(name, value, state);
+    }
+  );
 
   /**
-   * Create a new onChange function that updates the validationState behind
-   * the scenes. Name must reflect the name of the input.
+   * Create a new onChange function that calls validateIfTrue on a property 
+   * matching the name of the event whenever a change event happens.
    * @param property the name of the property to retrieve
    * @return boolean
    */
@@ -207,6 +218,7 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
     validate,
     validateAll,
     validateIfTrue,
+    validateOnBlur,
     validateOnChange,
     validationErrors,
     validationState,

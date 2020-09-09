@@ -16,6 +16,7 @@ function App() {
   };
 
   const handleChange = v.validateOnChange(onChange, state);
+  const handleBlur = v.validateOnBlur(state);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -27,25 +28,21 @@ function App() {
 
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="name">Name</label>
+          <label>Name</label>
           <input
-            id="name"
             name="name"
-            onBlur={() => v.validate('name', state.name, state)}
+            onBlur={handleBlur}
             onChange={handleChange}
-            type="text"
             value={state.name}
           />
           {v.getError('name') && <p>{v.getError('name')}</p>}
         </div>
         <div>
-          <label htmlFor="breed">Breed</label>
+          <label>Breed</label>
           <input
-            id="breed"
             name="breed"
-            onBlur={() => v.validate('breed', state.breed, state)}
+            onBlur={handleBlur}
             onChange={handleChange}
-            type="text"
             value={state.breed}
           />
           {v.getError('breed') && <p>{v.getError('breed')}</p>}
