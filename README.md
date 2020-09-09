@@ -1,3 +1,7 @@
+De-formed is an unopinionated library to manage validations.  Validations and form libraries are simply far too complicated for something that should be extremely simple and straight forward, which is the goal of de-formed.  
+
+De-formed will take a simple schema definition, and then provide you with a React Hook that can be imported anywhere, as needed, to handle validation related tasks. Developers can design their own validation behavior catered to their specific needs without having to worry about managing the validation data themselves.
+
 Create a file to define your validations:
 ```ts
 import {useValidation} from 'validation.hook';
