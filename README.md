@@ -1,3 +1,7 @@
+De-formed is an unopinionated library to manage validations.  Validations and form libraries are simply far too complicated for something that should be extremely simple and straight forward, which is the goal of de-formed.  
+
+De-formed will take a simple schema definition, and then provide you with a React Hook that can be imported anywhere, as needed, to handle validation related tasks. Developers can design their own validation behavior catered to their specific needs without having to worry about managing the validation data themselves.
+
 Create a file to define your validations:
 ```ts
 import {useValidation} from 'validation.hook';
@@ -46,33 +50,62 @@ export const BasicInputValidation = () => {
   });
 };
 ```
-Wherever you need to validate an input, just import the function and grab whatever you want off the hook's output:
+Example Usage:
 ```tsx
-const {
-  getError,
-  getFieldValid,
-  validate,
-  validateIfTrue,
-  validateOnChange,
-  validateAll
-} = BasicInputValidation();
+import React, { useState } from 'react';
+import { BasicInputValidation } from 'examples/basicInput.validation';
 
-const handleChange = validateOnChange(onChange, state);
+function App() {
+  const [state, setState] = useState({
+    name: '',
+    breed: '',
+  });
 
-return (
-  <>
-    <h3>Dog</h3>
-    <label>Name</label>
-    <input
-      key="name"
-      onBlur={() => validate('name', state.name, state)}
-      onChange={handleChange}
-      type="text" 
-      value={state.name}
-    />
-    <p>{getError('name')}</p>
-  </>
-);
+  const v = BasicInputValidation();
+
+  const onChange = (event: any) => {
+    const { value, name } = event.target;
+    const data = { [name]: value };
+    setState({ ...state, ...data });
+  };
+
+  const handleChange = v.validateOnChange(onChange, state);
+  const handleBlur = v.validateOnBlur(state);
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    v.validateAll(state);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Name</label>
+        <input
+          name="name"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          value={state.name}
+        />
+        {v.getError('name') && <p>{v.getError('name')}</p>}
+      </div>
+      <div>
+        <label>Breed</label>
+        <input
+          name="breed"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          value={state.breed}
+        />
+        {v.getError('breed') && <p>{v.getError('breed')}</p>}
+      </div>
+      <button disabled={!v.isValid}>Submit</button>
+    </form>
+  );
+}
+
+export default App;
+
 ```
 Available API options: 
 ```
@@ -82,6 +115,7 @@ isValid           --> boolean that represents if all fields in hook valid
 validate          --> function that validates a single field
 validateAll       --> function that validates all keys in hook
 validateIfTrue    --> function that updates hook if the validation passes (useful for onChange events)
+validateOnBlur    --> function that returns a new function which will update the validation state
 validateOnChange  --> function that returns a new function which will update the validation state
 validationErrors  --> list of active validation errors
 validationState   --> object that contains isValid and errorMessage for each field
