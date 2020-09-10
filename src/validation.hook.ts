@@ -174,11 +174,12 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
   // -- helper to update isValid state on change detection ----------------
   const allValid = compose(
     all(isEqual(true)),
-    map(getFieldValid)
+    map(getFieldValid),
+    Object.keys
   );
 
   useEffect(() => {
-    setIsValid(allValid(Object.keys(validationState)));
+    setIsValid(allValid(validationState));
   }, [validationState, allValid]);
 
   return {

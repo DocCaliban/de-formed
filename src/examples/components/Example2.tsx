@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Validation from 'validation';
 import {Dog} from 'examples/basicInput.validation';
+import {isEqual} from 'util/utilities';
 
 export class Example2 extends Component {
   state: {
@@ -13,19 +14,45 @@ export class Example2 extends Component {
       name: '',
       breed: '',
     };
+    this.onChange.bind(this);
+    this.handleChange.bind(this);
+    this.handleBlur.bind(this);
+    this.handleSubmit.bind(this);
   }
   v = new Validation<Dog>({
     name: [
       {
-        errorMessage: 'Name is required',
-        validation: (val: any, state: any) => !!val.trim(),
-      }
+        errorMessage: 'Cannot be Bob.',
+        validation: (val: string, state: any) => {
+          return !isEqual(val.trim().toLowerCase(), 'bob');
+        }
+      },
+      {
+        errorMessage: 'Cannot be Ross.',
+        validation: (val: string, state: any) => {
+          return !isEqual(val.trim().toLowerCase(), 'ross');
+        }
+      },
+      {
+        errorMessage: 'Name is required.',
+        validation: (val: string, state: any) => {
+          return val.trim().length > 0;
+        }
+      },
     ],
     breed: [
       {
-        errorMessage: 'Breed is required',
-        validation: (val: any, state: any) => !!val.trim(),
-      }
+        errorMessage: 'Must be a Leonberger.',
+        validation: (val: string, state: any) => {
+          return isEqual(val.trim().toLowerCase(), 'leonberger');
+        }
+      },
+      {
+        errorMessage: 'Breed is required.',
+        validation: (val: string, state: any) => {
+          return val.trim().length > 0;
+        }
+      },
     ]
   });
 
@@ -41,6 +68,7 @@ export class Example2 extends Component {
   handleSubmit = (e: any) => {
     e.preventDefault();
     this.v.validateAll(this.state);
+    this.forceUpdate();
   };
 
   render() {

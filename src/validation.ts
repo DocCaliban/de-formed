@@ -1,20 +1,22 @@
-import React from 'react';
 import {ValidationState, ValidationSchema} from "types/validation.type";
 import {createValidationsState} from "util/validationHelpers";
-import {compose, isEqual} from "util/utilities";
+import {compose, isEqual, trace} from "util/utilities";
 import {prop, map, all, indexOf, mergeDeepRight} from "ramda";
 
-class Validation<S> extends React.Component {
+class Validation<S> {
   isValid: boolean;
   schema: ValidationSchema<S>;
   state: ValidationState;
 
   constructor(props: ValidationSchema<S>) {
-    super(props);
-    console.log('wtf')
-    this.isValid = false;
+    this.isValid = true;
     this.state = createValidationsState(props);
     this.schema = props;
+    this.validate.bind(this);
+    this.validateIfTrue.bind(this);
+    this.allValid.bind(this);
+    this.getError.bind(this);
+    this.getFieldValid.bind(this);
   }
   /**
    * Executes the value against all provided validation functions and updates 
@@ -23,7 +25,7 @@ class Validation<S> extends React.Component {
    * @param value any the value to be tested for validation
    * @return true/false validation
    */
-  runAllValidators(property: string, value: any, state?: any) {
+  runAllValidators = (property: string, value: any, state?: any) => {
     const runValidator = compose(
       (func: Function) => func(value, state),
       prop('validation')
@@ -45,11 +47,11 @@ class Validation<S> extends React.Component {
    * @param value any the value to be tested for validation
    * @return boolean | undefined
    */
-  validate(property: string, value: unknown, state?: any) {
+  validate = (property: string, value: unknown, state?: any) => {
     if (property in this.schema) {
       const validations = this.runAllValidators(property, value, state);
       const updated = mergeDeepRight(this.state, validations);
-      this.setState(updated);
+      this.state = (updated);
       return validations[property].isValid;
     }
   };
@@ -60,12 +62,12 @@ class Validation<S> extends React.Component {
    * @param value any the value to be tested for validation
    * @return boolean | undefined
    */
-  validateIfTrue(property: string, value: unknown, state?: S) {
+  validateIfTrue = (property: string, value: unknown, state?: S) => {
     if (property in this.schema) {
       const validations = this.runAllValidators(property, value, state);
       if (validations[property].isValid) {
         const updated = mergeDeepRight(this.state, validations);
-        this.setState(updated)
+        this.state = (updated)
       }
       return validations[property].isValid;
     }
@@ -77,11 +79,10 @@ class Validation<S> extends React.Component {
    * @param state the data controlling the form
    * @return function
    */
-  validateOnBlur(state: any) {
-    const self = this;
-    return function(event: any) {
+  validateOnBlur = (state: any) => {
+    return (event: any) => {
       const { value, name } = event.target;
-      self.validate(name, value, state);
+      this.validate(name, value, state);
     }
   }
 
@@ -92,11 +93,10 @@ class Validation<S> extends React.Component {
    * @param state the data controlling the form
    * @return function
    */
-  validateOnChange(onChange: Function, state: any) {
-    const self = this;
-    return function(event: any) {
+  validateOnChange = (onChange: Function, state: any) => {
+    return (event: any) => {
       const { value, name } = event.target;
-      self.validateIfTrue(name, value, state);
+      this.validateIfTrue(name, value, state);
       return onChange(event);
     }
   }
@@ -108,7 +108,7 @@ class Validation<S> extends React.Component {
    * @param props string[] property names to check (optional)
    * @return boolean
    */
-  validateAll(state: S, props: string[] = Object.keys(this.schema)) {
+  validateAll = (state: S, props: string[] = Object.keys(this.schema)) => {
     const newState = props.reduce((acc: any, property: string) => {
       const r = this.runAllValidators(
         property,
@@ -118,9 +118,11 @@ class Validation<S> extends React.Component {
       acc = mergeDeepRight(acc, r);
       return acc;
     }, {});
-    this.setState(newState)
+    this.state = newState;
     const result = this.allValid(newState);
     this.isValid = result;
+    console.log('isValid', this.isValid);
+    console.log('result', result);
     return result;
   };
 
@@ -131,6 +133,7 @@ class Validation<S> extends React.Component {
    */
   getError = (property: string) => {
     if (property in this.schema) {
+      console.log(property);
       const val = compose(
         prop('error'),
         prop(property),
@@ -147,7 +150,7 @@ class Validation<S> extends React.Component {
    * @param property the name of the property to retrieve
    * @return boolean
    */
-  getFieldValid(property: string) {
+  getFieldValid = (property: string) => {
     if (property in this.schema) {
       const val = compose(
         prop('isValid'),
@@ -161,12 +164,14 @@ class Validation<S> extends React.Component {
 
 
   // -- array of all current validation errors ----------------------------
-  validationErrors = map(this.getError, Object.keys(this.state));
+  // validationErrors = map(this.getError, Object.keys(this.state));
 
   // -- helper to update isValid state on change detection ----------------
   allValid = compose(
     all(isEqual(true)),
-    map(this.getFieldValid)
+    trace('fieldValid'),
+    map(this.getFieldValid),
+    Object.keys
   );
 
 
