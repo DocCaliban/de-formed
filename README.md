@@ -1,13 +1,13 @@
-De-formed is an unopinionated library to manage validations.  Validations and form libraries are simply far too complicated for something that should be extremely simple and straight forward, which is the goal of de-formed.  
+De-formed is an unopinionated library to manage validationsin React.  Unfortunately, most validation/form libraries overly abstract the simple nature of validations with unorthodox syntax, cumbersome schemas, forced architecture choices, and lack of customiziation.  The goal of de-formed is to provide simple and straight forward validation management for React projects.  
 
 De-formed will take a simple schema definition, and then provide you with a React Hook that can be imported anywhere, as needed, to handle validation related tasks. Developers can design their own validation behavior catered to their specific needs without having to worry about managing the validation data themselves.
 
 Much of the time, Example 1 (see below) will be all you need, however, de-formed also makes it easy to:
 
-1) Create asymetrical validations (where maybe two or more properties always validate simultaneously but others behave normally)
-2) Customize how you want validations to react to events without restriction 
-3) Simplify code sharing by encapsulating instances in their own hooks
-
+1) Maintain separation between form/presentation logic and validation logic (see Example 1)
+2) Create asymetrical validations (where maybe two or more properties always validate simultaneously but others behave normally, see Example 2)
+3) Reuse validation logic, including the ability to import validations for nested scenarios (see Example 3)
+4) Customize how you want validations to react to events without restriction 
 
 Step 1: Create a file to define your validations:
 
@@ -126,16 +126,14 @@ export const Example2: FC = () => {
   const v = BasicInputValidation();
 
   const validateTogether = (name: string, data: any) => {
-    const props = ['name', 'breed'];
-    if (props.includes(name)) {
-      v.validateAll(data, ['name', 'breed']);
-    }
+    const properties = ['name', 'breed'];
+    properties.includes(name) && v.validateAll(data, properties);
   }
 
   const handleChange = (event: any) => {
     const { value, name } = event.target;
     const data = { [name]: value };
-    const updatedState = mergeDeepRight(state, data);
+    const updatedState = { ...state, ...data};
     validateTogether(name, updatedState);
     setState(updatedState);
   }
@@ -178,6 +176,127 @@ export const Example2: FC = () => {
     </form>
   );
 }
+```
+Example 3: Nested Forms
+
+Top Level Form:
+```
+import React, { useState, FC } from 'react';
+import {Dog, Person, emptyPerson, } from 'types';
+import {PersonValidation} from '../validationSchemas/Person.validation';
+import {DogForm} from './DogForm';
+import {upsertItem} from 'util/utilities';
+
+export const Example3: FC = () => {
+
+  const [state, setState] = useState<Person>(emptyPerson());
+  const [submitting, setSubmitting] = useState<boolean>(false);
+
+  const {
+    validateAll: validatePerson,
+    validateOnBlur: validatePersonBlur,
+    validateOnChange: validatePersonChange,
+    getError: getPersonError,
+    isValid: isPersonValid,
+  } = PersonValidation();
+
+  const onPersonChange = (event: any) => { ... };
+  const handlePersonChange = validatePersonChange(onPersonChange, state);
+  const handlePersonBlur = validatePersonBlur(state);
+
+  const handleDogChange = (index: number) => (event: any) => { ... };
+  const handleSubmit = (e: any) => { ... };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Name</label>
+        <input
+          name="name"
+          onBlur={handlePersonBlur}
+          onChange={handlePersonChange}
+          value={state.name}
+        />
+        {getPersonError('name') && <p>{getPersonError('name')}</p>}
+      </div>
+      <div>
+        <label>Age</label>
+        <input
+          name="age"
+          onBlur={handlePersonBlur}
+          onChange={handlePersonChange}
+          value={state.age}
+        />
+        {getPersonError('age') && <p>{getPersonError('age')}</p>}
+      </div>
+      {state.dog.map((dog: Dog, index: number) => (
+        <DogForm
+          key={index}
+          index={index} 
+          dog={dog}
+          onChange={handleDogChange}
+          onSubmit={submitting}
+        />
+      ))}
+      <button disabled={!isPersonValid}>Submit</button>
+    </form>
+  );
+};
+```
+Nested Form Element
+```
+import React, {FC, useEffect} from 'react';
+import {Dog} from 'types';
+import {DogValidation} from 'examples/validationSchemas/Dog.validation';
+
+type DogFormProps = {
+  dog: Dog;
+  index: number;
+  onChange: (index: number) => (event: any) => any;
+  onSubmit: boolean;
+};
+
+export const DogForm: FC<DogFormProps> = (props) => {
+  const { dog, index, onChange, onSubmit } = props;
+  const {
+    getError,
+    validateAll,
+    validateOnBlur,
+    validateOnChange,
+  } = DogValidation();
+
+  const handleDogBlur = validateOnBlur(dog);
+  const handleDogChange = validateOnChange(onChange(index), dog);
+
+  useEffect(() => {
+    onSubmit && validateAll(dog);
+  }, [onSubmit]);
+
+  return (
+    <>
+      <div>
+        <label>Dog Name</label>
+        <input
+          name="name"
+          onBlur={handleDogBlur}
+          onChange={handleDogChange}
+          value={dog.name}
+        />
+        {getError('name') && <p>{getError('name')}</p>}
+      </div>
+      <div>
+        <label>Breed</label>
+        <input
+          name="breed"
+          onBlur={handleDogBlur}
+          onChange={handleDogChange}
+          value={dog.breed}
+        />
+        {getError('breed') && <p>{getError('breed')}</p>}
+      </div>
+    </>
+  );
+};
 ```
 Available API options: 
 ```
