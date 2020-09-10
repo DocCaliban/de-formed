@@ -33,7 +33,7 @@ export const PersonValidation = () => {
     ],
     dog: [
       {
-        errorMessage: 'Must be a valid dog.',
+        errorMessage: 'All Dogs must be valid.',
         validation: (val: Dog[], state: any) => {
           return all(
             isEqual(true),

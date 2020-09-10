@@ -1,20 +1,19 @@
 import React, { useState, FC } from 'react';
 import {Dog, Person, emptyPerson, } from 'types';
-import {PersonValidation} from '../validationSchemas/Person.validation';
+import {PersonValidation} from 'examples/validationSchemas/Person.validation';
 import {DogForm} from './DogForm';
 import {upsertItem} from 'util/utilities';
 
 export const Example3: FC = () => {
 
   const [state, setState] = useState<Person>(emptyPerson());
-  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [runValidations, setRunValidations] = useState<boolean>(false);
 
   const {
     validateAll,
     validateOnBlur,
     validateOnChange,
     getError,
-    isValid,
   } = PersonValidation();
 
   const onPersonChange = (event: any) => {
@@ -29,15 +28,14 @@ export const Example3: FC = () => {
     const { value, name } = event.target;
     const data = { [name]: value };
     const dog = upsertItem<Dog>(state.dog, data, index);
-    setState({...state, dog });
+    setState({ ...state, dog });
   };
 
   const handleSubmit = (e: any) => {
-    setSubmitting(true);
     e.preventDefault();
+    setRunValidations(!runValidations); // force children to run validations
     const canSubmit = validateAll(state);
     console.log('canSubmit', canSubmit);
-    setSubmitting(false);
   };
 
   return (
@@ -64,12 +62,13 @@ export const Example3: FC = () => {
       </div>
       {state.dog.map((dog: Dog, index: number) => (
         <DogForm
+          key={index}
           dog={dog}
           onChange={handleDogChange(index)}
-          onSubmit={submitting}
+          runValidations={runValidations}
         />
       ))}
-      <button disabled={!isValid}>Submit</button>
+      <button>Submit</button>
     </form>
   );
 }

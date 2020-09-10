@@ -5,11 +5,12 @@ import {DogValidation} from 'examples/validationSchemas/Dog.validation';
 type DogFormProps = {
   dog: Dog;
   onChange: (event: any) => any;
-  onSubmit: boolean;
+  runValidations: boolean;
 };
 
 export const DogForm: FC<DogFormProps> = (props) => {
-  const { dog, onChange, onSubmit } = props;
+
+  const { dog, onChange, runValidations } = props;
   const {
     validateOnBlur,
     validateOnChange,
@@ -21,8 +22,8 @@ export const DogForm: FC<DogFormProps> = (props) => {
   const handleDogChange = validateOnChange(onChange, dog);
 
   useEffect(() => {
-    onSubmit && validateAll(dog);
-  }, [onSubmit])
+    runValidations && validateAll(dog);
+  }, [runValidations]);
 
   return (
     <>

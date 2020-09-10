@@ -1,9 +1,8 @@
 import React, { useState, FC } from 'react';
-import {mergeDeepRight} from 'ramda';
 import {Dog} from 'types';
-import {DogValidation} from './validationSchemas/Dog.validation';
+import {DogValidation} from 'examples/validationSchemas/Dog.validation';
 
-export const Example2: FC = () => {
+export const Example1: FC = () => {
 
   const [state, setState] = useState<Dog>({
     name: '',
@@ -12,29 +11,19 @@ export const Example2: FC = () => {
 
   const v = DogValidation();
 
-  const validateTogether = (name: string, data: any) => {
-    const properties = ['name', 'breed'];
-    properties.includes(name) && v.validateAll(data, properties);
-  }
-
-  const handleChange = (event: any) => {
+  const onChange = (event: any) => {
     const { value, name } = event.target;
     const data = { [name]: value };
-    const updatedState = mergeDeepRight(state, data);
-    validateTogether(name, updatedState);
-    setState(updatedState);
-  }
+    setState({ ...state, ...data });
+  };
 
-  const handleBlur = (event: any) => {
-    const { name } = event.target;
-    validateTogether(name, state);
-  }
+  const handleChange = v.validateOnChange(onChange, state);
+  const handleBlur = v.validateOnBlur(state);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    return v.validateAll(state)
-      ? console.log('Success, where we are going, we don\'t need roads!')
-      : console.log('Validations failed, sad panda...');
+    const canSubmit = v.validateAll(state);
+    console.log('canSubmit', canSubmit);
   };
 
   return (
