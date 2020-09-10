@@ -12,8 +12,8 @@ Much of the time, Example 1 (see below) will be all you need, however, de-formed
 Step 1: Create a file to define your validations:
 
 ```ts
-import {useValidation} from 'validation.hook';
-import {isEqual, trimAndLower } from 'util/utilities';
+import { useValidation } from 'validation.hook';
+import { isEqual, trimAndLower } from 'util/utilities';
 import { Dog } from 'types';
 
 export const BasicInputValidation = () => {
