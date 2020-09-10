@@ -13,17 +13,11 @@ export interface Dog {
 
 export const BasicInputValidation = () => {
   return useValidation<Dog>({
-    name: [
+   name: [
       {
         errorMessage: 'Cannot be Bob.',
         validation: (val: string, state: any) => {
-          return val.trim().toLowerCase() !== 'bob';
-        }
-      },
-      {
-        errorMessage: 'Cannot be Ross.',
-        validation: (val: string, state: any) => {
-          return val.trim().toLowerCase() !== 'ross';
+          return !isEqual(trimAndLower(val), 'bob');
         }
       },
       {
@@ -35,9 +29,11 @@ export const BasicInputValidation = () => {
     ],
     breed: [
       {
-        errorMessage: 'Must be a Leonberger.',
+        errorMessage: 'Cannot be Ross if name is Bob.',
         validation: (val: string, state: any) => {
-          return val.trim().toLowerCase() === 'leonberger';
+          return isEqual(trimAndLower(state.name), 'bob')
+            ? !isEqual(trimAndLower(val), 'ross')
+            : true;
         }
       },
       {
@@ -50,12 +46,14 @@ export const BasicInputValidation = () => {
   });
 };
 ```
-Example Usage:
+Example 1 - Basic Usage:
 ```tsx
 import React, { useState } from 'react';
+import {FC} from 'react';
 import { BasicInputValidation } from 'examples/basicInput.validation';
 
-function App() {
+export const Example1: FC = () => {
+
   const [state, setState] = useState({
     name: '',
     breed: '',
@@ -74,7 +72,9 @@ function App() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    v.validateAll(state);
+    return v.validateAll(state)
+      ? console.log('Success, where we are going, we don\'t need roads!')
+      : console.log('Validations failed, sad panda...');
   };
 
   return (
@@ -103,9 +103,76 @@ function App() {
     </form>
   );
 }
+```
+Example 2 - Use case where you might have to always validate two, or more different inputs simultaneously:
+```tsx
+import React, { useState } from 'react';
+import {FC} from 'react';
+import { BasicInputValidation } from 'examples/basicInput.validation';
+import {mergeDeepRight} from 'ramda';
 
-export default App;
+export const Example2: FC = () => {
 
+  const [state, setState] = useState({
+    name: '',
+    breed: '',
+  });
+
+  const v = BasicInputValidation();
+
+  const validateTogether = (name: string, data: any) => {
+    const props = ['name', 'breed'];
+    if (props.includes(name)) {
+      v.validateAll(data, ['name', 'breed']);
+    }
+  }
+
+  const handleChange = (event: any) => {
+    const { value, name } = event.target;
+    const data = { [name]: value };
+    const updatedState = mergeDeepRight(state, data);
+    validateTogether(name, updatedState);
+    setState(updatedState);
+  }
+
+  const handleBlur = (event: any) => {
+    const { name } = event.target;
+    validateTogether(name, state);
+  }
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    return v.validateAll(state)
+      ? console.log('Success, where we are going, we don\'t need roads!')
+      : console.log('Validations failed, sad panda...');
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Name</label>
+        <input
+          name="name"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          value={state.name}
+        />
+        {v.getError('name') && <p>{v.getError('name')}</p>}
+      </div>
+      <div>
+        <label>Breed</label>
+        <input
+          name="breed"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          value={state.breed}
+        />
+        {v.getError('breed') && <p>{v.getError('breed')}</p>}
+      </div>
+      <button disabled={!v.isValid}>Submit</button>
+    </form>
+  );
+}
 ```
 Available API options: 
 ```
