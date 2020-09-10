@@ -20,37 +20,35 @@ function App() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    v.validateAll(state);
+    return v.validateAll(state)
+      ? console.log('Success, where we are going, we don\'t need roads!')
+      : console.log('Validations failed, sad panda...');
   };
 
   return (
-    <div style={{ padding: '10rem' }}>
-
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name</label>
-          <input
-            name="name"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            value={state.name}
-          />
-          {v.getError('name') && <p>{v.getError('name')}</p>}
-        </div>
-        <div>
-          <label>Breed</label>
-          <input
-            name="breed"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            value={state.breed}
-          />
-          {v.getError('breed') && <p>{v.getError('breed')}</p>}
-        </div>
-        <button disabled={!v.isValid}>Submit</button>
-      </form>
-
-    </div>
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Name</label>
+        <input
+          name="name"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          value={state.name}
+        />
+        {v.getError('name') && <p>{v.getError('name')}</p>}
+      </div>
+      <div>
+        <label>Breed</label>
+        <input
+          name="breed"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          value={state.breed}
+        />
+        {v.getError('breed') && <p>{v.getError('breed')}</p>}
+      </div>
+      <button disabled={!v.isValid}>Submit</button>
+    </form>
   );
 }
 
