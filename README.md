@@ -5,11 +5,8 @@ De-formed will take a simple schema definition, and then provide you with a Reac
 Create a file to define your validations:
 ```ts
 import {useValidation} from 'validation.hook';
-
-export interface Dog {
-  name: string;
-  breed: string;
-}
+import {isEqual, trimAndLower } from 'util/utilities';
+import { Dog } from 'types';
 
 export const BasicInputValidation = () => {
   return useValidation<Dog>({
