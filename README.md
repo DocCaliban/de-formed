@@ -36,7 +36,7 @@ export const BasicInputValidation = () => {
       {
         errorMessage: 'Cannot be Ross if name is Bob.',
         validation: (val: string, state: any) => {
-          return isEqual(trimAndLower(state.name), 'bob')
+          return state.name.trim() === 'bob'
             ? val.trim() !== 'ross'
             : true;
         }
