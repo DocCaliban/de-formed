@@ -22,8 +22,8 @@ export const Example3: FC = () => {
     const data = { [name]: value };
     setState({ ...state, ...data });
   };
-  const handlePersonChange = validateOnChange(onPersonChange, state);
-  const handlePersonBlur = validateOnBlur(state);
+  const handleOnChange = validateOnChange(onPersonChange, state);
+  const handleOnBlur = validateOnBlur(state);
 
   const handleDogChange = (index: number) => (event: any) => {
     const { value, name } = event.target;
@@ -46,8 +46,8 @@ export const Example3: FC = () => {
         <label>Name</label>
         <input
           name="name"
-          onBlur={handlePersonBlur}
-          onChange={handlePersonChange}
+          onBlur={handleOnBlur}
+          onChange={handleOnChange}
           value={state.name}
         />
         {getError('name') && <p>{getError('name')}</p>}
@@ -56,8 +56,8 @@ export const Example3: FC = () => {
         <label>Age</label>
         <input
           name="age"
-          onBlur={handlePersonBlur}
-          onChange={handlePersonChange}
+          onBlur={handleOnBlur}
+          onChange={handleOnChange}
           value={state.age}
         />
         {getError('age') && <p>{getError('age')}</p>}
