@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { ValidationObject } from 'validation.hook';
 import { prop } from 'ramda';
 import { randomString } from 'util/utilities';
+import {ValidationObject} from 'types/validation.type';
 
 type InputProps = {
   disabled?: boolean;
