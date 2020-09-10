@@ -9,7 +9,7 @@ Much of the time, Example 1 (see below) will be all you need, however, de-formed
 3) Simplify code sharing by encapsulating instances in their own hooks
 
 
-Step 1: Create a file to define your validations:import {isEqual, trimAndLower } from 'util/utilities';
+Step 1: Create a file to define your validations:
 
 ```ts
 import {useValidation} from 'validation.hook';
