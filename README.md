@@ -231,10 +231,8 @@ export const Example3: FC = () => {
       </div>
       {state.dog.map((dog: Dog, index: number) => (
         <DogForm
-          key={index}
-          index={index} 
           dog={dog}
-          onChange={handleDogChange}
+          onChange={handleDogChange(index)}
           onSubmit={submitting}
         />
       ))}
@@ -251,13 +249,12 @@ import {DogValidation} from 'examples/validationSchemas/Dog.validation';
 
 type DogFormProps = {
   dog: Dog;
-  index: number;
-  onChange: (index: number) => (event: any) => any;
+  onChange: (event: any) => any;
   onSubmit: boolean;
 };
 
 export const DogForm: FC<DogFormProps> = (props) => {
-  const { dog, index, onChange, onSubmit } = props;
+  const { dog, onChange, onSubmit } = props;
   const {
     getError,
     validateAll,
@@ -266,7 +263,7 @@ export const DogForm: FC<DogFormProps> = (props) => {
   } = DogValidation();
 
   const handleDogBlur = validateOnBlur(dog);
-  const handleDogChange = validateOnChange(onChange(index), dog);
+  const handleDogChange = validateOnChange(onChange, dog);
 
   useEffect(() => {
     onSubmit && validateAll(dog);
