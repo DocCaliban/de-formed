@@ -22,7 +22,7 @@ export const BasicInputValidation = () => {
       {
         errorMessage: 'Cannot be Bob.',
         validation: (val: string, state: any) => {
-          return !isEqual(trimAndLower(val), 'bob');
+          return val.trim() !== 'bob');
         }
       },
       {
@@ -37,7 +37,7 @@ export const BasicInputValidation = () => {
         errorMessage: 'Cannot be Ross if name is Bob.',
         validation: (val: string, state: any) => {
           return isEqual(trimAndLower(state.name), 'bob')
-            ? !isEqual(trimAndLower(val), 'ross')
+            ? val.trim() !== 'ross')
             : true;
         }
       },
