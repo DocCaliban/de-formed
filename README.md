@@ -171,12 +171,13 @@ export const Example2: FC = () => {
 ```
 Example 3: Nested Forms
 
-Nested Validation Schema:
+Nested Validation Schema: (ramda is not required, the dog validation is just mapping over the array and determining if they're all true)
 ```tsx
 import {useValidation} from 'validation.hook';
 import {Person, Dog} from 'types';
 import {isEqual, trimAndLower } from 'util/utilities';
 import {DogValidation} from './Dog.validation';
+import {all, map} from 'ramda';
 
 export const PersonValidation = () => {
 
@@ -208,8 +209,11 @@ export const PersonValidation = () => {
     dog: [
       {
         errorMessage: 'Must be a valid dog.',
-        validation: (val: Dog, state: any) => {
-          return validateDog(val);
+        validation: (val: Dog[], state: any) => {
+          return all(
+            isEqual(true),
+            map(validateDog, val)
+          );
         }
       }
     ]
@@ -230,16 +234,16 @@ export const Example3: FC = () => {
   const [submitting, setSubmitting] = useState<boolean>(false);
 
   const {
-    validateAll: validatePerson,
-    validateOnBlur: validatePersonBlur,
-    validateOnChange: validatePersonChange,
-    getError: getPersonError,
-    isValid: isPersonValid,
+    validateAll,
+    validateOnBlur,
+    validateOnChange,
+    getError,
+    isValid,
   } = PersonValidation();
 
   const onPersonChange = (event: any) => { ... };
-  const handlePersonChange = validatePersonChange(onPersonChange, state);
-  const handlePersonBlur = validatePersonBlur(state);
+  const handleOnChange = validateOnChange(onPersonChange, state);
+  const handleOnBlur = validateOnBlur(state)
   const handleDogChange = (index: number) => (event: any) => { ... };
   const handleSubmit = (e: any) => { ... };
 
@@ -249,21 +253,21 @@ export const Example3: FC = () => {
         <label>Name</label>
         <input
           name="name"
-          onBlur={handlePersonBlur}
-          onChange={handlePersonChange}
+          onBlur={handleOnBlur}
+          onChange={handleOnChange}
           value={state.name}
         />
-        {getPersonError('name') && <p>{getPersonError('name')}</p>}
+        {getError('name') && <p>{getError('name')}</p>}
       </div>
       <div>
         <label>Age</label>
         <input
           name="age"
-          onBlur={handlePersonBlur}
-          onChange={handlePersonChange}
+          onBlur={handleOnBlur}
+          onChange={handleOnChange}
           value={state.age}
         />
-        {getPersonError('age') && <p>{getPersonError('age')}</p>}
+        {getError('age') && <p>{getError('age')}</p>}
       </div>
       {state.dog.map((dog: Dog, index: number) => (
         <DogForm
@@ -272,7 +276,7 @@ export const Example3: FC = () => {
           onSubmit={submitting}
         />
       ))}
-      <button disabled={!isPersonValid}>Submit</button>
+      <button disabled={!isValid}>Submit</button>
     </form>
   );
 };
