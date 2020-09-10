@@ -180,6 +180,7 @@ export const Example2: FC = () => {
 Example 3: Nested Forms
 
 Top Level Form:
+(redundant logic is abbreviated with { ... } -- see source code example for details on example implementation)
 ```tsx
 import React, { useState, FC } from 'react';
 import {Dog, Person, emptyPerson, } from 'types';
@@ -203,7 +204,6 @@ export const Example3: FC = () => {
   const onPersonChange = (event: any) => { ... };
   const handlePersonChange = validatePersonChange(onPersonChange, state);
   const handlePersonBlur = validatePersonBlur(state);
-
   const handleDogChange = (index: number) => (event: any) => { ... };
   const handleSubmit = (e: any) => { ... };
 
