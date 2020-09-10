@@ -56,16 +56,17 @@ Step 2: Plug and Play
 Example 1: Basic Usage
 ```tsx
 import React, { useState, FC } from 'react';
-import { BasicInputValidation } from 'examples/basicInput.validation';
+import { Dog } from 'types';
+import { DogValidation } from 'examples/validationSchemas/Dog.validation';
 
 export const Example1: FC = () => {
 
-  const [state, setState] = useState({
+  const [state, setState] = useState<Dog>({
     name: '',
     breed: '',
   });
 
-  const v = BasicInputValidation();
+  const v = DogValidation();
 
   const onChange = (event: any) => {
     const { value, name } = event.target;
@@ -78,9 +79,8 @@ export const Example1: FC = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    return v.validateAll(state)
-      ? console.log('Success, where we are going, we don\'t need roads!')
-      : console.log('Validations failed, sad panda...');
+    const canSubmit = v.validateAll(state);
+    console.log('canSubmit', canSubmit);
   };
 
   return (
@@ -108,37 +108,37 @@ export const Example1: FC = () => {
       <button disabled={!v.isValid}>Submit</button>
     </form>
   );
-}
+};
 ```
 Example 2: Asymetrical validation
 ```tsx
 import React, { useState, FC } from 'react';
-import { BasicInputValidation } from 'examples/basicInput.validation';
-import {mergeDeepRight} from 'ramda';
+import { Dog } from 'types';
+import { DogValidation } from 'examples/validationSchemas/Dog.validation';
 
 export const Example2: FC = () => {
 
-  const [state, setState] = useState({
+  const [state, setState] = useState<Dog>({
     name: '',
     breed: '',
   });
 
-  const v = BasicInputValidation();
+  const v = DogValidation();
 
   const validateTogether = (name: string, data: any) => {
     const properties = ['name', 'breed'];
     properties.includes(name) && v.validateAll(data, properties);
-  }
+  };
 
   const handleChange = (event: any) => {
-    { ... logic ... }
+    { ... }
     validateTogether(name, updatedState);
-  }
+  };
 
   const handleBlur = (event: any) => {
     const { name } = event.target;
     validateTogether(name, state);
-  }
+  };
 
   const handleSubmit = (e: any) => { ... };
 
@@ -164,20 +164,20 @@ export const Example2: FC = () => {
         />
         {v.getError('breed') && <p>{v.getError('breed')}</p>}
       </div>
-      <button disabled={!v.isValid}>Submit</button>
+      <button>Submit</button>
     </form>
   );
-}
+};
 ```
 Example 3: Nested Forms
 
 Nested Validation Schema: (ramda is not required, the dog validation is just mapping over the array and determining if they're all true)
 ```tsx
-import {useValidation} from 'validation.hook';
-import {Person, Dog} from 'types';
-import {isEqual, trimAndLower } from 'util/utilities';
-import {DogValidation} from './Dog.validation';
-import {all, map} from 'ramda';
+import { useValidation } from 'validation.hook';
+import { Person, Dog } from 'types';
+import { isEqual, trimAndLower } from 'util/utilities';
+import { DogValidation } from './Dog.validation';
+import { all, map } from 'ramda';
 
 export const PersonValidation = () => {
 
@@ -208,7 +208,7 @@ export const PersonValidation = () => {
     ],
     dog: [
       {
-        errorMessage: 'Must be a valid dog.',
+        errorMessage: 'All Dogs must be valid.',
         validation: (val: Dog[], state: any) => {
           return all(
             isEqual(true),
@@ -223,27 +223,26 @@ export const PersonValidation = () => {
 Top Level Form:
 ```tsx
 import React, { useState, FC } from 'react';
-import {Dog, Person, emptyPerson, } from 'types';
-import {PersonValidation} from '../validationSchemas/Person.validation';
-import {DogForm} from './DogForm';
-import {upsertItem} from 'util/utilities';
+import { Dog, Person, emptyPerson } from 'types';
+import { PersonValidation } from 'examples/validationSchemas/Person.validation';
+import { DogForm } from './DogForm';
+import { upsertItem } from 'util/utilities';
 
 export const Example3: FC = () => {
 
   const [state, setState] = useState<Person>(emptyPerson());
-  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [runValidations, setRunValidations] = useState<boolean>(false);
 
   const {
     validateAll,
     validateOnBlur,
     validateOnChange,
     getError,
-    isValid,
   } = PersonValidation();
 
   const onPersonChange = (event: any) => { ... };
   const handleOnChange = validateOnChange(onPersonChange, state);
-  const handleOnBlur = validateOnBlur(state)
+  const handleOnBlur = validateOnBlur(state);
   const handleDogChange = (index: number) => (event: any) => { ... };
   const handleSubmit = (e: any) => { ... };
 
@@ -271,12 +270,13 @@ export const Example3: FC = () => {
       </div>
       {state.dog.map((dog: Dog, index: number) => (
         <DogForm
+          key={index}
           dog={dog}
           onChange={handleDogChange(index)}
-          onSubmit={submitting}
+          runValidations={runValidations}
         />
       ))}
-      <button disabled={!isValid}>Submit</button>
+      <button>Submit</button>
     </form>
   );
 };
@@ -284,30 +284,31 @@ export const Example3: FC = () => {
 Nested Form Element:
 ```tsx
 import React, {FC, useEffect} from 'react';
-import {Dog} from 'types';
-import {DogValidation} from 'examples/validationSchemas/Dog.validation';
+import { Dog } from 'types';
+import { DogValidation } from 'examples/validationSchemas/Dog.validation';
 
 type DogFormProps = {
   dog: Dog;
   onChange: (event: any) => any;
-  onSubmit: boolean;
+  runValidations: boolean;
 };
 
 export const DogForm: FC<DogFormProps> = (props) => {
-  const { dog, onChange, onSubmit } = props;
+
+  const { dog, onChange, runValidations } = props;
   const {
-    getError,
-    validateAll,
     validateOnBlur,
     validateOnChange,
+    getError,
+    validateAll,
   } = DogValidation();
 
   const handleDogBlur = validateOnBlur(dog);
   const handleDogChange = validateOnChange(onChange, dog);
 
   useEffect(() => {
-    onSubmit && validateAll(dog);
-  }, [onSubmit]);
+    runValidations && validateAll(dog);
+  }, [runValidations]);
 
   return (
     <>
