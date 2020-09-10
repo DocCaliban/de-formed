@@ -53,7 +53,7 @@ export const BasicInputValidation = () => {
 ```
 Step 2: Plug and Play
 
-Example 1 - Basic Usage:
+Example 1: Basic Usage
 ```tsx
 import React, { useState, FC } from 'react';
 import { BasicInputValidation } from 'examples/basicInput.validation';
@@ -110,7 +110,7 @@ export const Example1: FC = () => {
   );
 }
 ```
-Example 2 - Use case where you might have to always validate two, or more different inputs simultaneously:
+Example 2: Asymetrical validation
 ```tsx
 import React, { useState, FC } from 'react';
 import { BasicInputValidation } from 'examples/basicInput.validation';
@@ -180,7 +180,7 @@ export const Example2: FC = () => {
 Example 3: Nested Forms
 
 Top Level Form:
-```
+```tsx
 import React, { useState, FC } from 'react';
 import {Dog, Person, emptyPerson, } from 'types';
 import {PersonValidation} from '../validationSchemas/Person.validation';
@@ -243,8 +243,8 @@ export const Example3: FC = () => {
   );
 };
 ```
-Nested Form Element
-```
+Nested Form Element:
+```tsx
 import React, {FC, useEffect} from 'react';
 import {Dog} from 'types';
 import {DogValidation} from 'examples/validationSchemas/Dog.validation';
