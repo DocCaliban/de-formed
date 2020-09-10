@@ -5,9 +5,9 @@ De-formed will take a simple schema definition, and then provide you with a Reac
 Much of the time, Example 1 (see below) will be all you need, however, de-formed also makes it easy to:
 
 1) Maintain separation between form/presentation logic and validation logic (see Example 1)
-2) Create asymetrical validations (where maybe two or more properties always validate simultaneously but others behave normally, see Example 2)
-3) Reuse validation logic, including the ability to import validations for nested scenarios (see Example 3)
-4) Customize how you want validations to react to events without restriction 
+2) Create asymetrical validations (where validations might occur depending on highly contextual situations, see Example 2)
+3) Reuse and nest validation logic (see Example 3)
+4) Customize how you want validations to respond to events without restriction 
 
 Step 1: Create a file to define your validations:
 
