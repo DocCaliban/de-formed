@@ -1,4 +1,4 @@
-import { curry } from 'ramda';
+import { curry, trim, toLower } from 'ramda';
 
 /**
  * Creates a random 7 character string.
@@ -37,4 +37,15 @@ export const deepEqual = (a: unknown, b: unknown) => {
  *  @return boolean
  */
 export const isEqual = curry((a: any, b: any) => deepEqual(a, b));
+
+/**
+ *  Function that converts a string to lowercase and removes whitespace at start
+ *  and end.
+ *  @param string
+ *  @return string
+ */
+export const trimAndLower = compose(
+  trim,
+  toLower
+);
 
