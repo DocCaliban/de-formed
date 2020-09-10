@@ -1,22 +1,20 @@
-import React, { useState } from 'react';
-import {FC} from 'react';
-import { BasicInputValidation } from 'examples/basicInput.validation';
+import React, { useState, FC } from 'react';
 import {mergeDeepRight} from 'ramda';
+import {Dog} from 'types';
+import {DogValidation} from './validationSchemas/Dog.validation';
 
 export const Example2: FC = () => {
 
-  const [state, setState] = useState({
+  const [state, setState] = useState<Dog>({
     name: '',
     breed: '',
   });
 
-  const v = BasicInputValidation();
+  const v = DogValidation();
 
   const validateTogether = (name: string, data: any) => {
-    const props = ['name', 'breed'];
-    if (props.includes(name)) {
-      v.validateAll(data, ['name', 'breed']);
-    }
+    const properties = ['name', 'breed'];
+    properties.includes(name) && v.validateAll(data, properties);
   }
 
   const handleChange = (event: any) => {

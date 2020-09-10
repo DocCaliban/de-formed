@@ -1,12 +1,8 @@
 import {useValidation} from 'validation.hook';
 import {isEqual, trimAndLower } from 'util/utilities';
+import {Dog} from 'types';
 
-export interface Dog {
-  name: string;
-  breed: string;
-}
-
-export const BasicInputValidation = () => {
+export const DogValidation = () => {
   return useValidation<Dog>({
     name: [
       {

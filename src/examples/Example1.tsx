@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import {FC} from 'react';
-import { BasicInputValidation } from 'examples/basicInput.validation';
+import React, { useState, FC } from 'react';
+import {DogValidation} from './validationSchemas/Dog.validation';
+import {Dog} from 'types';
 
 export const Example1: FC = () => {
 
-  const [state, setState] = useState({
+  const [state, setState] = useState<Dog>({
     name: '',
     breed: '',
   });
 
-  const v = BasicInputValidation();
+  const v = DogValidation();
 
   const onChange = (event: any) => {
     const { value, name } = event.target;

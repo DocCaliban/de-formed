@@ -49,3 +49,10 @@ export const trimAndLower = compose(
   toLower
 );
 
+export const upsertItem = <T>(items: T[], data: Partial<T>, index: number) => {
+  return items.map((item: T, itemIndex: number) => {
+    return itemIndex === index 
+      ? { ...item, ...data }
+      : { ...item };
+  });
+}
