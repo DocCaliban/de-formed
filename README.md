@@ -55,8 +55,7 @@ Step 2: Plug and Play
 
 Example 1 - Basic Usage:
 ```tsx
-import React, { useState } from 'react';
-import {FC} from 'react';
+import React, { useState, FC } from 'react';
 import { BasicInputValidation } from 'examples/basicInput.validation';
 
 export const Example1: FC = () => {
@@ -113,8 +112,7 @@ export const Example1: FC = () => {
 ```
 Example 2 - Use case where you might have to always validate two, or more different inputs simultaneously:
 ```tsx
-import React, { useState } from 'react';
-import {FC} from 'react';
+import React, { useState, FC } from 'react';
 import { BasicInputValidation } from 'examples/basicInput.validation';
 import {mergeDeepRight} from 'ramda';
 
