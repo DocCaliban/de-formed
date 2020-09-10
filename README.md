@@ -131,11 +131,8 @@ export const Example2: FC = () => {
   }
 
   const handleChange = (event: any) => {
-    const { value, name } = event.target;
-    const data = { [name]: value };
-    const updatedState = { ...state, ...data};
+    { ... logic ... }
     validateTogether(name, updatedState);
-    setState(updatedState);
   }
 
   const handleBlur = (event: any) => {
@@ -143,12 +140,7 @@ export const Example2: FC = () => {
     validateTogether(name, state);
   }
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    return v.validateAll(state)
-      ? console.log('Success, where we are going, we don\'t need roads!')
-      : console.log('Validations failed, sad panda...');
-  };
+  const handleSubmit = (e: any) => { ... };
 
   return (
     <form onSubmit={handleSubmit}>
