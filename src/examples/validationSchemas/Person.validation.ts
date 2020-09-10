@@ -2,6 +2,7 @@ import {useValidation} from 'validation.hook';
 import {Person, Dog} from 'types';
 import {isEqual, trimAndLower } from 'util/utilities';
 import {DogValidation} from './Dog.validation';
+import {all, map} from 'ramda';
 
 export const PersonValidation = () => {
 
@@ -33,8 +34,11 @@ export const PersonValidation = () => {
     dog: [
       {
         errorMessage: 'Must be a valid dog.',
-        validation: (val: Dog, state: any) => {
-          return validateDog(val);
+        validation: (val: Dog[], state: any) => {
+          return all(
+            isEqual(true),
+            map(validateDog, val)
+          );
         }
       }
     ]

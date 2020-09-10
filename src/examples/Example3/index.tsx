@@ -10,11 +10,11 @@ export const Example3: FC = () => {
   const [submitting, setSubmitting] = useState<boolean>(false);
 
   const {
-    validateAll: validatePerson,
-    validateOnBlur: validatePersonBlur,
-    validateOnChange: validatePersonChange,
-    getError: getPersonError,
-    isValid: isPersonValid,
+    validateAll,
+    validateOnBlur,
+    validateOnChange,
+    getError,
+    isValid,
   } = PersonValidation();
 
   const onPersonChange = (event: any) => {
@@ -22,8 +22,8 @@ export const Example3: FC = () => {
     const data = { [name]: value };
     setState({ ...state, ...data });
   };
-  const handlePersonChange = validatePersonChange(onPersonChange, state);
-  const handlePersonBlur = validatePersonBlur(state);
+  const handlePersonChange = validateOnChange(onPersonChange, state);
+  const handlePersonBlur = validateOnBlur(state);
 
   const handleDogChange = (index: number) => (event: any) => {
     const { value, name } = event.target;
@@ -35,9 +35,8 @@ export const Example3: FC = () => {
   const handleSubmit = (e: any) => {
     setSubmitting(true);
     e.preventDefault();
-    validatePerson(state)
-      ? console.log('Success, where we are going, we don\'t need roads!')
-      : console.log('Validations failed, sad panda...');
+    const canSubmit = validateAll(state);
+    console.log('canSubmit', canSubmit);
     setSubmitting(false);
   };
 
@@ -51,7 +50,7 @@ export const Example3: FC = () => {
           onChange={handlePersonChange}
           value={state.name}
         />
-        {getPersonError('name') && <p>{getPersonError('name')}</p>}
+        {getError('name') && <p>{getError('name')}</p>}
       </div>
       <div>
         <label>Age</label>
@@ -61,7 +60,7 @@ export const Example3: FC = () => {
           onChange={handlePersonChange}
           value={state.age}
         />
-        {getPersonError('age') && <p>{getPersonError('age')}</p>}
+        {getError('age') && <p>{getError('age')}</p>}
       </div>
       {state.dog.map((dog: Dog, index: number) => (
         <DogForm
@@ -70,7 +69,7 @@ export const Example3: FC = () => {
           onSubmit={submitting}
         />
       ))}
-      <button disabled={!isPersonValid}>Submit</button>
+      <button disabled={!isValid}>Submit</button>
     </form>
   );
 }

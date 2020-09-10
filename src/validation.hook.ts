@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { prop, map, all, indexOf, mergeDeepRight } from 'ramda';
 import { compose, isEqual } from 'util/utilities';
 
@@ -171,13 +171,16 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
    * @param property the name of the property to retrieve
    * @return string
    */
-  const getError = (property: string) => {
+  const getError = (
+    property: string,
+    vState: ValidationState = validationState
+  ) => {
     if (property in validationSchema) {
       const val = compose(
         prop('error'),
         prop(property),
       );
-      return val(validationState);
+      return val(vState);
     }
     return '';
   };
@@ -189,13 +192,16 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
    * @param property the name of the property to retrieve
    * @return boolean
    */
-  const getFieldValid = (property: string) => {
+  const getFieldValid = (
+    property: string,
+    vState: ValidationState = validationState
+  ) => {
     if (property in validationSchema) {
       const val = compose(
         prop('isValid'),
         prop(property),
       );
-      return val(validationState);
+      return val(vState);
     }
     return true;
   };
@@ -203,15 +209,23 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
   // -- array of all current validation errors ----------------------------
   const validationErrors = map(getError, Object.keys(validationState));
 
-  // -- helper to update isValid state on change detection ----------------
-  const allValid = compose(
-    all(isEqual(true)),
-    map(getFieldValid)
-  );
+  // -- helper to determine if a new validation state is valid ------------
+  const allValid = (state: ValidationState) => {
+    const keys = Object.keys(state);
+    const valid = keys.reduce((prev: boolean, current: string) => {
+      return prev
+        ? getFieldValid(current, state)
+        : prev
+    }, true);
+    return valid;
+  }
+
+  // -- memoized allValid to update state on change detection -------------
+  const updateIsValid = useCallback(allValid, [validationState]);
 
   useEffect(() => {
-    setIsValid(allValid(Object.keys(validationState)));
-  }, [validationState, allValid]);
+    setIsValid(updateIsValid(validationState));
+  }, [validationState, updateIsValid]);
 
   return {
     getError,
