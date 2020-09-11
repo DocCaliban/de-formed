@@ -11,7 +11,7 @@ Much of the time, Example 1 (see below) will be all you need, however, de-formed
 4) Customize how you want validations to respond to events without restriction 
 
 ## Usage
-###Step 1: Create a file to define your validations. 
+### Step 1: Create a file to define your validations. 
 To avoid unecessary complexity, use the property names for the object you want to validate.
 
 ```ts
