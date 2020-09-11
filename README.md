@@ -19,7 +19,7 @@ the validation data themselves.
 
 ## Usage
 ### Step 1: Create a file to define your validations. 
-Validation functions can recieve an optional second parameter of state if any validations are conditional on other properties in state.  To avoid unecessary 
+Validation functions can receive an optional second parameter of state if any validations are conditional on other properties in state.  To avoid unnecessary 
 complexity, use the property names of the object you want to validate. 
 
 ```ts
