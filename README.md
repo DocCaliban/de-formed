@@ -112,21 +112,15 @@ export const Example1: FC = () => {
   );
 };
 ```
-## Available API Options: 
-```
-getError          --> current error message for a field
-getFieldValid     --> returns whether a specific field is valid
-isValid           --> boolean that represents if all fields in hook valid
-validate          --> function that validates a single field
-validateAll       --> function that validates all keys in hook
-validateIfTrue    --> function that updates hook if the validation passes (useful for onChange events)
-validateOnBlur    --> function that returns a new function which will update the validation state
-validateOnChange  --> function that returns a new function which will update the validation state
-validationErrors  --> list of active validation errors
-validationState   --> object that contains isValid and errorMessage for each field
-```
+## Documentation
+Check out our [documentation](https://github.com/prescottbreeden/de-formed/wiki/Docs) in full.
+
+## Examples
+More [examples](https://github.com/prescottbreeden/de-formed/wiki/Examples) and CodeSandboxes.
+
 ## License
 This project is licensed under the terms of the [MIT license](/LICENSE).
+
 ## Future Features:
 - class-based version for projects that are unable to implement a hook
 - yup integration maybe
