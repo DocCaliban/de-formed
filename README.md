@@ -8,7 +8,27 @@ requirements. In fact, only 2 helper functions are unavailble to the API providi
 
 De-Formed takes a simple schema definition and then provides you with a React Hook containing various objects and functions that can be imported anywhere, as
 needed, to handle validation related tasks. Developers can design the validation behavior catered to their specific needs without having to worry about managing 
-the validation data themselves.
+the validation data themselves.MIT License
+
+Copyright (c) [year] [fullname]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ## Why use De-Formed?
 1) Maintain separation between form logic, presentation logic, and validation logic.
@@ -112,6 +132,32 @@ export const Example1: FC = () => {
   );
 };
 ```
+## Available API Options: 
+```
+getError          --> current error message for a field
+getFieldValid     --> returns whether a specific field is valid
+isValid           --> boolean that represents if all fields in hook valid
+validate          --> function that validates a single field
+validateAll       --> function that validates all keys in hook
+validateIfTrue    --> function that updates hook if the validation passes (useful for onChange events)
+validateOnBlur    --> function that returns a new function which will update the validation state
+validateOnChange  --> function that returns a new function which will update the validation state
+validationErrors  --> list of active validation errors
+validationState   --> object that contains isValid and errorMessage for each field
+```
+## License
+This project is licensed under the terms of the [MIT license](/LICENSE).
+## Future Features:
+- class-based version for projects that are unable to implement a hook
+- yup integration maybe
+
+## unsorted guide material:
+When using state in a validation function, it is assumed that state is the object containing the property of the 
+validation (e.g. "state" in the below example is assumed to be a Dog object by the API). If you choose to use an alternate object, ignore that validation key when 
+you invoke validateAll by not including it in the optional second paramter. For example, if you wish to only execute the 'name' validation from the schema (or 
+ignore the 'breed' validation), you can name the properties that should be evaluated during 'validateAll' in the include array:```validateAll(state, ['name'])```
+
+
 ## Codependent Validation
 ```tsx
 import React, { useState, FC } from 'react';
@@ -333,25 +379,3 @@ export const DogForm: FC<DogFormProps> = (props) => {
   );
 };
 ```
-## Available API Options: 
-```
-getError          --> current error message for a field
-getFieldValid     --> returns whether a specific field is valid
-isValid           --> boolean that represents if all fields in hook valid
-validate          --> function that validates a single field
-validateAll       --> function that validates all keys in hook
-validateIfTrue    --> function that updates hook if the validation passes (useful for onChange events)
-validateOnBlur    --> function that returns a new function which will update the validation state
-validateOnChange  --> function that returns a new function which will update the validation state
-validationErrors  --> list of active validation errors
-validationState   --> object that contains isValid and errorMessage for each field
-```
-## Future Features:
-- class-based version for projects that are unable to implement a hook
-- yup integration maybe
-
-## unsorted guide material:
-When using state in a validation function, it is assumed that state is the object containing the property of the 
-validation (e.g. "state" in the below example is assumed to be a Dog object by the API). If you choose to use an alternate object, ignore that validation key when 
-you invoke validateAll by not including it in the optional second paramter. For example, if you wish to only execute the 'name' validation from the schema (or 
-ignore the 'breed' validation), you can name the properties that should be evaluated during 'validateAll' in the include array:```validateAll(state, ['name'])```
