@@ -15,7 +15,7 @@ the validation data themselves.
 2) Let your architecture be guided by you and not your form library. 
 3) Customize validation behavior with ease in contextual situations.
 4) Lego-style approach makes reusing and nesting validations a snap.
-5) Light-weight.
+5) Light-weight and easy to test.
 
 ## Usage
 ### Step 1: Create a file to define your validations. 

@@ -72,8 +72,9 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
    * @return true/false validation
    */
   const runAllValidators = (property: string, value: any, state?: S) => {
+    const val = typeof value === 'string' ? value.trim() : value;
     const runValidator = compose(
-      (func: Function) => func(value, state),
+      (func: Function) => func(val, state),
       prop('validation')
     );
     const bools: boolean[] = map(runValidator, validationSchema[property]);

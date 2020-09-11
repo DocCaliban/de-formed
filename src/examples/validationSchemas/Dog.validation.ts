@@ -17,7 +17,7 @@ export const DogValidation = () => {
       {
         errorMessage: 'Cannot be Ross if name is Bob.',
         validation: (val: string, state: any) => {
-          return state.name.toLowerCase() === 'bob'
+          return state.name.trim().toLowerCase() === 'bob'
             ? val.toLowerCase() === 'ross'
             : true;
         }
