@@ -117,7 +117,7 @@ export const Example1: FC = () => {
   );
 };
 ```
-## Asymmetrical Validation
+## Co-Dependent Validation
 ```tsx
 import React, { useState, FC } from 'react';
 import { Dog } from 'types';
