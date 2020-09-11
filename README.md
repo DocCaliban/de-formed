@@ -3,11 +3,12 @@ De-Formed Validations is an unopinionated library to manage validations in [Reac
 
 The goal of de-formed is to provide straight forward, 
 clean, and clear syntax while implementing all the functionality needed to handle both simple and complex validation requirements.  Very little attempt has been 
-made to abstract the implementation of this library from the developer, giving it a function-based Lego-like approach to design validation patterns that meet your 
-requirements--making it fully customizable.
+made to abstract the implementation of this library from the developer giving it a function-based, Lego-like approach to design validation patterns that meet your 
+requirements. In fact, only 2 helper functions sit behind the API providing as little abstraction as possible.
 
-De-Formed takes a simple schema definition and then provides you with a React Hook that can be imported anywhere, as needed, to handle validation related tasks. 
-Developers can design the validation behavior catered to their specific needs without having to worry about managing the validation data themselves.
+De-Formed takes a simple schema definition and then provides you with a React Hook containing various objects and functions that can be imported anywhere, as
+needed, to handle validation related tasks. Developers can design the validation behavior catered to their specific needs without having to worry about managing 
+the validation data themselves.
 
 ## Why use De-Formed?
 1) Maintain separation between form logic, presentation logic, and validation logic.
