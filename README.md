@@ -1,14 +1,14 @@
 <p align="center"><strong>De-Formed Validations</strong></p>
-De-Formed Validations is an unopinionated library to manage validations in React.  Unfortunately, many form and validation libraries create highly abstract validations with unorthodox syntax, cumbersome schemas, forced architecture choices, and lack of customiziation.  The goal of de-formed is to provide simple and straight forward validation management for React projects.  
-</p>
-De-Formed Validations will take a simple schema definition, and then provide you with a React Hook that can be imported anywhere, as needed, to handle validation related tasks. Developers can design their own validation behavior catered to their specific needs without having to worry about managing the validation data themselves.
+De-Formed Validations is an unopinionated library to manage validations in [React](https://reactjs.org/).  The goal of de-formed is to provide straight forward, clean, and clear syntax while implementing all the functionality needed to handle both simple and complex validation requirements.  Very little attempt has been made to abstract the implementation of this library from the user, giving it a function-based Lego-like approach to design validation patterns that meet your requirements--making it fully customizable.
+ 
+De-Formed Validations takes a simple schema definition and then provides you with a React Hook that can be imported anywhere, as needed, to handle validation related tasks. Developers can design the validation behavior catered to their specific needs without having to worry about managing the validation data themselves.
 
-Much of the time, Example 1 (see below) will be all you need, however, de-formed also makes it easy to:
-
-1) Maintain separation between form logic, presentation logic and validation logic
-2) Create asymetrical validations (where validations might occur depending on highly contextual situations)
-3) Reuse and nest validation logic
-4) Customize how you want validations to respond to events without restriction 
+## Why use De-Formed?
+1) Maintain separation between form logic, presentation logic, and validation logic.
+2) Let your architecture be guided by you and not your form library. 
+3) Customize validation behavior with ease in contextual situations.
+4) Lego-style approach makes reusing and nesting validations a snap.
+5) Cause hooks are awesome!
 
 ## Usage
 ### Step 1: Create a file to define your validations. 
