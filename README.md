@@ -110,7 +110,7 @@ export const Example1: FC = () => {
   );
 };
 ```
-## Asymetrical validation
+## Asymmetrical validation
 ```tsx
 import React, { useState, FC } from 'react';
 import { Dog } from 'types';
