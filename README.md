@@ -1,5 +1,7 @@
 # De-Formed Validations
-De-Formed Validations is an unopinionated library to manage validations in [React](https://reactjs.org/).  The goal of de-formed is to provide straight forward, 
+De-Formed Validations is an unopinionated library to manage validations in [React](https://reactjs.org/).
+
+The goal of de-formed is to provide straight forward, 
 clean, and clear syntax while implementing all the functionality needed to handle both simple and complex validation requirements.  Very little attempt has been 
 made to abstract the implementation of this library from the developer, giving it a function-based Lego-like approach to design validation patterns that meet your 
 requirements--making it fully customizable.
