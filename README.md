@@ -12,17 +12,16 @@ Much of the time, Example 1 (see below) will be all you need, however, de-formed
 Step 1: Create a file to define your validations:
 
 ```ts
-import { useValidation } from 'validation.hook';
-import { isEqual, trimAndLower } from 'util/utilities';
-import { Dog } from 'types';
+import {useValidation} from 'validation.hook';
+import {Dog} from 'types';
 
-export const BasicInputValidation = () => {
+export const DogValidation = () => {
   return useValidation<Dog>({
-   name: [
+    name: [
       {
         errorMessage: 'Cannot be Bob.',
         validation: (val: string, state: any) => {
-          return val.trim() !== 'bob';
+          return val.trim() !== 'bob');
         }
       },
       {
@@ -36,11 +35,20 @@ export const BasicInputValidation = () => {
       {
         errorMessage: 'Cannot be Ross if name is Bob.',
         validation: (val: string, state: any) => {
-          return state.name.trim() === 'bob'
-            ? val.trim() !== 'ross'
+          return state.name.trim() === 'bob')
+            ? val.trim() !== 'ross')
             : true;
         }
-      },import React, { useState, FC } from 'react';
+      },
+      {
+        errorMessage: 'Breed is required.',
+        validation: (val: string, state: any) => {
+          return val.trim().length > 0;
+        }
+      },
+    ]
+  });
+};
 ```
 Step 2: Plug and Play
 
