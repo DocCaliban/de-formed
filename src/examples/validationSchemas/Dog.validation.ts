@@ -1,5 +1,4 @@
 import {useValidation} from 'validation.hook';
-import {isEqual, trimAndLower } from 'util/utilities';
 import {Dog} from 'types';
 
 export const DogValidation = () => {
@@ -7,31 +6,25 @@ export const DogValidation = () => {
     name: [
       {
         errorMessage: 'Cannot be Bob.',
-        validation: (val: string, state: any) => {
-          return !isEqual(trimAndLower(val), 'bob');
-        }
+        validation: (val: string) => val.toLowerCase() !== 'bob',
       },
       {
         errorMessage: 'Name is required.',
-        validation: (val: string, state: any) => {
-          return val.trim().length > 0;
-        }
+        validation: (val: string) => val.length > 0,
       },
     ],
     breed: [
       {
         errorMessage: 'Cannot be Ross if name is Bob.',
         validation: (val: string, state: any) => {
-          return isEqual(trimAndLower(state.name), 'bob')
-            ? !isEqual(trimAndLower(val), 'ross')
+          return state.name.toLowerCase() === 'bob'
+            ? val.toLowerCase() === 'ross'
             : true;
         }
       },
       {
         errorMessage: 'Breed is required.',
-        validation: (val: string, state: any) => {
-          return val.trim().length > 0;
-        }
+        validation: (val: string) => val.length > 0,
       },
     ]
   });
