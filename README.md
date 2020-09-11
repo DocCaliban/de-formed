@@ -172,6 +172,8 @@ export const Example2: FC = () => {
 };
 ```
 ## Nested Forms
+Nesting is not uncommon when handling dynamic forms where a user can add as many inputs as they need. Below is an example of a hypothetical form where additional
+dogs can be added by the user to the form, each requiring editing and submission validations.
 
 ### Nested Validation Schema
 ```tsx
