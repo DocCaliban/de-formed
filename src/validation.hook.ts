@@ -39,7 +39,7 @@ export interface ValidationObject {
  * A hook that can be used to generate an object containing functions and
  * properties pertaining to the validation state provided.
  * @param validationSchema an object containing all the properties you want to validate
- * @returns object { getError, getFieldValid, isValid, validate, validateAll, validateIfTrue, validationState }
+ * @returns object { getError, getFieldValid, isValid, validate, validateAll, validateIfTrue, validateOnBlur, validateOnChange, validationState }
  */
 export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
 
