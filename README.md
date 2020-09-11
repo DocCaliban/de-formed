@@ -1,14 +1,9 @@
 # De-Formed Validations
 De-Formed Validations is an unopinionated library to manage validations in [React](https://reactjs.org/).
 
-The goal of de-formed is to provide straight forward, 
-clean, and clear syntax while implementing all the functionality needed to handle both simple and complex validation requirements.  Very little attempt has been 
-made to abstract the implementation of this library from the developer giving it a function-based, Lego-like approach to design validation patterns that meet your 
-requirements. In fact, only 2 helper functions are unavailble to the API providing as little abstraction as possible.
+The goal of de-formed is to provide straight forward, clean, and clear syntax while implementing all the functionality needed to handle both simple and complex validation requirements.  Very little attempt has been made to abstract the implementation of this library from the developer giving it a function-based, Lego-like approach to design validation patterns that meet your requirements.
 
-De-Formed takes a simple schema definition and then provides you with a React Hook containing various objects and functions that can be imported anywhere, as
-needed, to handle validation related tasks. Developers can design the validation behavior catered to their specific needs without having to worry about managing 
-the validation data themselves.
+De-Formed takes a simple schema definition and then provides you with a React Hook containing various objects and functions that can be imported anywhere, as needed, to handle validation related tasks. Developers can design the validation behavior catered to their specific needs without having to worry about managing the validation data themselves.
 
 ## Why use De-Formed?
 1) Maintain separation between form logic, presentation logic, and validation logic.
@@ -19,8 +14,7 @@ the validation data themselves.
 
 ## Usage
 ### Step 1: Create a file to define your validations. 
-To avoid unnecessary complexity, use the property names of the object you want to validate for the schema property names. Validation functions can receive an
-optional second parameter of state if needed.
+To avoid unnecessary complexity, use the property names of the object you want to validate for the schema property names. Validation functions can receive an optional second parameter of state if needed.
 
 ```ts
 import {useValidation} from 'validation.hook';
