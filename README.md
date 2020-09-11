@@ -117,7 +117,7 @@ export const Example1: FC = () => {
   );
 };
 ```
-## Asymmetrical validation
+## Asymmetrical Validation
 ```tsx
 import React, { useState, FC } from 'react';
 import { Dog } from 'types';
@@ -343,7 +343,7 @@ export const DogForm: FC<DogFormProps> = (props) => {
   );
 };
 ```
-## Available API options: 
+## Available API Options: 
 ```
 getError          --> current error message for a field
 getFieldValid     --> returns whether a specific field is valid
@@ -356,7 +356,7 @@ validateOnChange  --> function that returns a new function which will update the
 validationErrors  --> list of active validation errors
 validationState   --> object that contains isValid and errorMessage for each field
 ```
-## Future features:
+## Future Features:
 - validate string detection to auto-trim strings
 - class-based version for projects that are unable to implement a hook
 - yup integration maybe
