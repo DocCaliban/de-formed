@@ -22,8 +22,8 @@ the validation data themselves.
 To avoid unnecessary complexity, use the property names of the object you want to validate for the schema property names. Validation functions can receive an
 optional second parameter of state if needed. When using state in a validation function, it is assumed that state is the object containing the property of the 
 validation (e.g. "state" in the below example is assumed to be a Dog object by the API). If you choose to use an alternate object, ignore that validation key when 
-you invoke validateAll by stipulating the include array to use with validationAll when it is invoked. For example, if you wish to only execute the 'name' 
-validation from the schema, you can name it in the include array:```validateAll(state, ['name'])```
+you invoke validateAll by not including it in the optional second paramter. For example, if you wish to only execute the 'name' validation from the schema (or 
+ignore the 'breed' validation), you can name the properties that should be evaluated during 'validateAll' in the include array:```validateAll(state, ['name'])```
 
 ```ts
 import {useValidation} from 'validation.hook';
