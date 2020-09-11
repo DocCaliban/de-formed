@@ -5,9 +5,9 @@ De-Formed Validations will take a simple schema definition, and then provide you
 
 Much of the time, Example 1 (see below) will be all you need, however, de-formed also makes it easy to:
 
-1) Maintain separation between form logic, presentation logic and validation logic (see Example 1)
-2) Create asymetrical validations (where validations might occur depending on highly contextual situations, see Example 2)
-3) Reuse and nest validation logic (see Example 3)
+1) Maintain separation between form logic, presentation logic and validation logic
+2) Create asymetrical validations (where validations might occur depending on highly contextual situations)
+3) Reuse and nest validation logic
 4) Customize how you want validations to respond to events without restriction 
 
 ## Usage
@@ -53,9 +53,7 @@ export const DogValidation = () => {
   });
 };
 ```
-Step 2: Plug and Play
-
-Example 1: Basic Usage
+## Step 2: Plug and Play
 ```tsx
 import React, { useState, FC } from 'react';
 import { Dog } from 'types';
@@ -112,7 +110,7 @@ export const Example1: FC = () => {
   );
 };
 ```
-Example 2: Asymetrical validation
+## Asymetrical validation
 ```tsx
 import React, { useState, FC } from 'react';
 import { Dog } from 'types';
@@ -171,9 +169,9 @@ export const Example2: FC = () => {
   );
 };
 ```
-Example 3: Nested Forms
+## Nested Forms
 
-Nested Validation Schema: (ramda is not required, the dog validation is just mapping over the array and determining if they're all true)
+### Nested Validation Schema
 ```tsx
 import { useValidation } from 'validation.hook';
 import { Person, Dog } from 'types';
@@ -222,7 +220,7 @@ export const PersonValidation = () => {
   });
 };
 ```
-Top Level Form:
+### Top Level Form:
 ```tsx
 import React, { useState, FC } from 'react';
 import { Dog, Person, emptyPerson } from 'types';
@@ -283,7 +281,7 @@ export const Example3: FC = () => {
   );
 };
 ```
-Nested Form Element:
+### Nested Form Element:
 ```tsx
 import React, {FC, useEffect} from 'react';
 import { Dog } from 'types';
@@ -338,7 +336,7 @@ export const DogForm: FC<DogFormProps> = (props) => {
   );
 };
 ```
-Available API options: 
+## Available API options: 
 ```
 getError          --> current error message for a field
 getFieldValid     --> returns whether a specific field is valid
@@ -351,7 +349,7 @@ validateOnChange  --> function that returns a new function which will update the
 validationErrors  --> list of active validation errors
 validationState   --> object that contains isValid and errorMessage for each field
 ```
-Future features:
+## Future features:
 - validate string detection to auto-trim strings
 - class-based version for projects that are unable to implement a hook
 - yup integration maybe
