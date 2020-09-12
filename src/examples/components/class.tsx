@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import Validation from 'validation';
-import {Dog} from 'examples/basicInput.validation';
-import {isEqual} from 'util/utilities';
+import {Dog} from 'examples/types';
 
 export class Example2 extends Component {
   state: {
@@ -24,19 +23,19 @@ export class Example2 extends Component {
       {
         errorMessage: 'Cannot be Bob.',
         validation: (val: string, state: any) => {
-          return !isEqual(val.trim().toLowerCase(), 'bob');
+          return val.toLowerCase() === 'bob';
         }
       },
       {
         errorMessage: 'Cannot be Ross.',
         validation: (val: string, state: any) => {
-          return !isEqual(val.trim().toLowerCase(), 'ross');
+          return val.toLowerCase() !== 'ross';
         }
       },
       {
         errorMessage: 'Name is required.',
         validation: (val: string, state: any) => {
-          return val.trim().length > 0;
+          return val.length > 0;
         }
       },
     ],
@@ -44,13 +43,13 @@ export class Example2 extends Component {
       {
         errorMessage: 'Must be a Leonberger.',
         validation: (val: string, state: any) => {
-          return isEqual(val.trim().toLowerCase(), 'leonberger');
+          return val.toLowerCase() === 'leonberger';
         }
       },
       {
         errorMessage: 'Breed is required.',
         validation: (val: string, state: any) => {
-          return val.trim().length > 0;
+          return val.length > 0;
         }
       },
     ]

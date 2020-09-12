@@ -1,88 +1,100 @@
-Create a file to define your validations:
+# De-Formed Validations
+De-Formed Validations is an unopinionated library to manage validations in [React](https://reactjs.org/).
+
+The goal of de-formed is to provide straight forward, clean, and clear syntax while implementing all the functionality needed to handle both simple and complex validations. With de-formed, just define as many functions as you find necessary, and then execute them on whichever events you choose. Very little attempt has been made to abstract the implementation of this library from the developer giving it a function-based, Lego-like approach to design validation patterns that meet your requirements.
+
+De-Formed takes a simple schema definition and then provides you with a React Hook containing various objects and functions that can be imported anywhere, as needed, to handle validation related tasks. Developers can design the validation behavior catered to their specific needs without having to worry about managing the validation data themselves.
+
+## Why use De-Formed?
+1) Maintain separation between form logic, presentation logic, and validation logic.
+2) Customize validation behavior with ease in contextual and dynamic situations.
+3) Lego-style approach makes reusing and nested validations a snap.
+4) Light-weight and easy to test.
+
+## Usage
+### Step 1: Create a file to define your validations. 
+To avoid unnecessary complexity, use the property names of the object you want to validate for the schema property names. Validation functions can receive an optional second parameter of state if needed.
+
 ```ts
-import {useValidation} from 'validation.hook';
-
-export interface Dog {
-  name: string;
-  breed: string;
-}
-
-export const BasicInputValidation = () => {
+export const DogValidation = () => {
   return useValidation<Dog>({
     name: [
       {
         errorMessage: 'Cannot be Bob.',
-        validation: (val: string, state: any) => {
-          return val.trim().toLowerCase() !== 'bob';
-        }
-      },
-      {
-        errorMessage: 'Cannot be Ross.',
-        validation: (val: string, state: any) => {
-          return val.trim().toLowerCase() !== 'ross';
-        }
+        validation: (val: string) => val.toLowerCase() !== 'bob',
       },
       {
         errorMessage: 'Name is required.',
-        validation: (val: string, state: any) => {
-          return val.trim().length > 0;
-        }
+        validation: (val: string) => val.length > 0,
       },
     ],
     breed: [
       {
-        errorMessage: 'Must be a Leonberger.',
-        validation: (val: string, state: any) => {
-          return val.trim().toLowerCase() === 'leonberger';
+        errorMessage: 'Cannot be Ross if name is Bob.',
+        validation: (val: string, state: Dog) => {
+          return state.name.toLowerCase() === 'bob'
+            ? val.toLowerCase() === 'ross'
+            : true;
         }
       },
       {
         errorMessage: 'Breed is required.',
-        validation: (val: string, state: any) => {
-          return val.trim().length > 0;
-        }
+        validation: (val: string) => val.length > 0,
       },
     ]
   });
 };
 ```
-Wherever you need to validate an input, just import the function and grab whatever you want off the hook's output:
+## Step 2: Plug and Play
 ```tsx
-const {
-  getError,
-  getFieldValid,
-  validate,
-  validateIfTrue,
-  validateOnChange,
-  validateAll
-} = BasicInputValidation();
+export const DogForm = ({ state, onChange }) => {
+  const v = DogValidation();
 
-const handleChange = validateOnChange(onChange, state);
+  const handleChange = v.validateOnChange(onChange, state);
+  const handleBlur = v.validateOnBlur(state);
 
-return (
-  <>
-    <h3>Dog</h3>
-    <label>Name</label>
-    <input
-      key="name"
-      onBlur={() => validate('name', state.name, state)}
-      onChange={handleChange}
-      type="text" 
-      value={state.name}
-    />
-    <p>{getError('name')}</p>
-  </>
-);
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    const canSubmit = v.validateAll(state);
+    console.log('canSubmit', canSubmit);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>Name</label>
+        <input
+          name="name"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          value={state.name}
+        />
+        {v.getError('name') && <p>{v.getError('name')}</p>}
+      </div>
+      <div>
+        <label>Breed</label>
+        <input
+          name="breed"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          value={state.breed}
+        />
+        {v.getError('breed') && <p>{v.getError('breed')}</p>}
+      </div>
+      <button disabled={!v.isValid}>Submit</button>
+    </form>
+  );
+};
 ```
-Available API options: 
-```
-getError          --> current error message for a field
-getFieldValid     --> returns whether a specific field is valid
-isValid           --> boolean that represents if all fields in hook valid
-validate          --> function that validates a single field
-validateAll       --> function that validates all keys in hook
-validateIfTrue    --> function that updates hook if the validation passes (useful for onChange events)
-validateOnChange  --> function that returns a new function which will update the validation state
-validationErrors  --> list of active validation errors
-validationState   --> object that contains isValid and errorMessage for each field
-```
+## Documentation
+Check out our [documentation](https://github.com/prescottbreeden/de-formed/wiki/Docs) in full.
+
+## Examples
+More [examples](https://github.com/prescottbreeden/de-formed/wiki/Examples) and CodeSandboxes.
+
+## License
+This project is licensed under the terms of the [MIT license](/LICENSE).
+
+## Future Features:
+- class-based version for projects that are unable to implement a hook
+- yup integration maybe
