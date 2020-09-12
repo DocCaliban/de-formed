@@ -1,5 +1,5 @@
 import React, { useState, FC } from 'react';
-import {Dog, Person, emptyPerson, } from 'types';
+import {Dog, Person, emptyPerson, } from 'examples/types';
 import {PersonValidation} from 'examples/validationSchemas/Person.validation';
 import {DogForm} from './DogForm';
 import {upsertItem} from 'util/utilities';

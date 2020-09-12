@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { prop, map, all, indexOf, mergeDeepRight } from 'ramda';
-import { compose, isEqual } from 'util/utilities';
+import { compose, prop, map, all } from 'util/utilities';
 
 interface ValidationFunction<S> {
   (val: any, state: S): boolean;
@@ -46,7 +45,7 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
   // -- Build Validation State Object -------------------------------------
   const createValidationsState = (schema: ValidationSchema<S>) => {
     const keys = Object.keys(schema);
-    return keys.reduce(
+    const vState = keys.reduce(
       (prev: any, item: string) => {
         prev[item] = {
           isValid: true,
@@ -56,6 +55,7 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
       },
       {}
     );
+    return vState;
   };
 
   // -- isValid and validationState ---------------------------------------
@@ -78,8 +78,8 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
       prop('validation')
     );
     const bools: boolean[] = map(runValidator, validationSchema[property]);
-    const isValid: boolean = all(isEqual(true), bools);
-    const index: number = indexOf(false, bools);
+    const isValid: boolean = all(bools);
+    const index: number = bools.indexOf(false);
     const error = index > -1
       ? validationSchema[property][index].errorMessage
       : '';
@@ -97,7 +97,7 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
   const validate = (property: string, value: unknown, state?: S) => {
     if (property in validationSchema) {
       const validations = runAllValidators(property, value, state);
-      const updated = mergeDeepRight(validationState, validations);
+      const updated = { ...validationState, ...validations };
       setValidationState(updated);
       return validations[property].isValid;
     }
@@ -113,7 +113,7 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
     if (property in validationSchema) {
       const validations = runAllValidators(property, value, state);
       if (validations[property].isValid) {
-        setValidationState(mergeDeepRight(validationState, validations));
+        setValidationState({ ...validationState, ...validations });
       }
       return validations[property].isValid;
     }
@@ -158,7 +158,7 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
   ) => {
     const newState = props.reduce((acc: any, property: string) => {
       const r = runAllValidators(property, state[property as keyof S], state);
-      acc = mergeDeepRight(acc, r);
+      acc = { ...acc, ...r };
       return acc;
     }, {});
     setValidationState(newState);
@@ -181,7 +181,7 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
         prop('error'),
         prop(property),
       );
-      return val(vState);
+      return val(vState) ? val(vState) : '';
     }
     return '';
   };

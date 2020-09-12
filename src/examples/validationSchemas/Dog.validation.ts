@@ -1,5 +1,5 @@
-import {useValidation} from 'validation.hook';
-import {Dog} from 'types';
+import {useValidation} from 'validation/validation.hook';
+import {Dog} from 'examples/types';
 
 export const DogValidation = () => {
   return useValidation<Dog>({

@@ -1,6 +1,5 @@
 import React, { useState, FC } from 'react';
-import {mergeDeepRight} from 'ramda';
-import {Dog} from 'types';
+import {Dog} from 'examples/types';
 import {DogValidation} from 'examples/validationSchemas/Dog.validation';
 
 export const Example2: FC = () => {
@@ -15,20 +14,20 @@ export const Example2: FC = () => {
   const validateTogether = (name: string, data: any) => {
     const properties = ['name', 'breed'];
     properties.includes(name) && v.validateAll(data, properties);
-  }
+  };
 
   const handleChange = (event: any) => {
     const { value, name } = event.target;
     const data = { [name]: value };
-    const updatedState = mergeDeepRight(state, data);
+    const updatedState = { ...state, ...data };
     validateTogether(name, updatedState);
     setState(updatedState);
-  }
+  };
 
   const handleBlur = (event: any) => {
     const { name } = event.target;
     validateTogether(name, state);
-  }
+  };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -61,4 +60,4 @@ export const Example2: FC = () => {
       <button>Submit</button>
     </form>
   );
-}
+};

@@ -1,5 +1,5 @@
 import React, {FC, useEffect} from 'react';
-import {Dog} from 'types';
+import {Dog} from 'examples/types';
 import {DogValidation} from 'examples/validationSchemas/Dog.validation';
 
 type DogFormProps = {

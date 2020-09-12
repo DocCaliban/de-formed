@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
-import {ValidationObject} from 'validation.hook';
-import {prop } from 'ramda';
-import {randomString} from 'util/utilities';
+import {ValidationObject} from 'validation/validation.hook';
+import {randomString, prop} from 'util/utilities';
 
 type WrapperProps = {
   name: string;
