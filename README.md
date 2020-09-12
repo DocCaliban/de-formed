@@ -47,16 +47,8 @@ export const DogValidation = () => {
 ```
 ## Step 2: Plug and Play
 ```tsx
-export const Example1: FC = () => {
-  const [state, setState] = useState<Dog>({ name: '', breed: '' });
-
+export const DogForm = ({ state, onChange }) => {
   const v = DogValidation();
-
-  const onChange = (event: any) => {
-    const { value, name } = event.target;
-    const data = { [name]: value };
-    setState({ ...state, ...data });
-  };
 
   const handleChange = v.validateOnChange(onChange, state);
   const handleBlur = v.validateOnBlur(state);
