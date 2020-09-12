@@ -16,9 +16,6 @@ De-Formed takes a simple schema definition and then provides you with a React Ho
 To avoid unnecessary complexity, use the property names of the object you want to validate for the schema property names. Validation functions can receive an optional second parameter of state if needed.
 
 ```ts
-import {useValidation} from 'validation.hook';
-import {Dog} from 'types';
-
 export const DogValidation = () => {
   return useValidation<Dog>({
     name: [
@@ -50,10 +47,6 @@ export const DogValidation = () => {
 ```
 ## Step 2: Plug and Play
 ```tsx
-import React, { useState, FC } from 'react';
-import { Dog } from 'types';
-import { DogValidation } from 'examples/validationSchemas/Dog.validation';
-
 export const Example1: FC = () => {
 
   const [state, setState] = useState<Dog>({
