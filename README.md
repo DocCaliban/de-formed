@@ -48,11 +48,7 @@ export const DogValidation = () => {
 ## Step 2: Plug and Play
 ```tsx
 export const Example1: FC = () => {
-
-  const [state, setState] = useState<Dog>({
-    name: '',
-    breed: '',
-  });
+  const [state, setState] = useState<Dog>({ name: '', breed: '' });
 
   const v = DogValidation();
 
