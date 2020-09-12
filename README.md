@@ -7,7 +7,7 @@ De-Formed takes a simple schema definition and then provides you with a React Ho
 
 ## Why use De-Formed?
 1) Maintain separation between form logic, presentation logic, and validation logic.
-2) Customize validation behavior with ease in both contextual and dynamic situations.
+2) Customize validation behavior with ease in contextual and dynamic situations.
 3) Lego-style approach makes reusing and nested validations a snap.
 4) Light-weight and easy to test.
 
