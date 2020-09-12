@@ -95,6 +95,3 @@ More [examples](https://github.com/prescottbreeden/de-formed/wiki/Examples) and 
 ## License
 This project is licensed under the terms of the [MIT license](/LICENSE).
 
-## Future Features:
-- class-based version for projects that are unable to implement a hook
-- yup integration maybe

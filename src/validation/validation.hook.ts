@@ -10,7 +10,7 @@ interface ValidationProps<S> {
   validation: ValidationFunction<S>;
 };
 
-interface ValidationSchema<S> {
+export interface ValidationSchema<S> {
   [key: string]: ValidationProps<S>[];
 };
 
@@ -33,6 +33,21 @@ export interface ValidationObject {
   validationErrors: string[];
   validationState: ValidationState;
 };
+  // -- Build Validation State Object -------------------------------------
+  export const createValidationsState = (schema: ValidationSchema<any>) => {
+    const keys = Object.keys(schema);
+    const vState = keys.reduce(
+      (prev: any, item: string) => {
+        prev[item] = {
+          isValid: true,
+          error: ''
+        };
+        return prev;
+      },
+      {}
+    );
+    return vState;
+  };
 
 /**
  * A hook that can be used to generate an object containing functions and
@@ -43,7 +58,7 @@ export interface ValidationObject {
 export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
 
   // -- Build Validation State Object -------------------------------------
-  const createValidationsState = (schema: ValidationSchema<S>) => {
+  const createValidationsState = (schema: ValidationSchema<any>) => {
     const keys = Object.keys(schema);
     const vState = keys.reduce(
       (prev: any, item: string) => {
