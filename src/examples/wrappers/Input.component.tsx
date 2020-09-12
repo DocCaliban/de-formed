@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import { ValidationObject } from 'validation/validation.hook';
-import { randomString, prop } from 'util/utilities';
+import { randomString } from 'util/utilities';
 
 type InputProps = {
   disabled?: boolean;
   label: string;
   name: string;
-  onChange?: (event: any) => void;
+  onChange?: (event: any) => any;
   state: any;
   type?: string;
   v?: ValidationObject;
@@ -26,8 +26,8 @@ export const Input: FC<InputProps> = (props) => {
       key: name,
       id: name,
       name,
-      onBlur: () => v.validate(name, prop(name, state), state),
-      onChange,
+      onBlur: v.validateOnBlur(state),
+      onChange: v.validateOnChange(onChange as any, state),
       pattern: getPattern(state[name]),
       value: state[name],
       type: type,
