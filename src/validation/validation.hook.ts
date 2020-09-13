@@ -125,7 +125,6 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
    * @return function
    */
   const validateOnBlur = (state: S) => ((event: ChangeEvent<HTMLInputElement>) => {
-    console.log(event);
       const { value, name } = event.target;
       validate(name as keyof S, value, state);
     }

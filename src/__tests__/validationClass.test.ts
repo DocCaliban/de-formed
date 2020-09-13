@@ -20,11 +20,12 @@ const schema: ValidationSchema<any> = {
   ],
   age: [
     {
-      errorMessage: 'Must be 18',
+      errorMessage: 'Must be 18.',
       validation: (val: number) => val >= 18,
     }
   ]
 };
+
 const mockValidationState: ValidationState = {
   name: {
     isValid: true,
@@ -41,9 +42,11 @@ const defaultState = {
   dingo: false,
   age: 42,
 };
+
 const failingState = {
   ...defaultState,
   name: 'bob',
+  age: 15,
 };
 
 describe('useValidation tests', () => {
@@ -64,12 +67,25 @@ describe('useValidation tests', () => {
     expect(typeof v.validateOnChange).toBe('function');
     expect(Array.isArray(v.validationErrors)).toBe(true);
     expect(typeof v.validationState).toBe('object');
-    
   });
 
-  it('returns all functions and read-only objects defined by hook', () => {
+  it('returns all functions and read-only objects defined by class', () => {
     const v = new Validation(schema);
     expect(v.validationState).toStrictEqual(mockValidationState);
+    expect(Object.keys(v)).toStrictEqual([
+      '_validationSchema',
+      '_validationState',
+      'createValidationsState',
+      'allValid',
+      'runAllValidators',
+      'getError',
+      'getFieldValid',
+      'validate',
+      'validateAll',
+      'validateIfTrue',
+      'validateOnBlur',
+      'validateOnChange',
+    ]);
   });
 
   describe('getError', () => {
@@ -126,15 +142,14 @@ describe('useValidation tests', () => {
       expect(v.isValid).toBe(true);
     });
 
-    // TODO: fix isValid
-    // it('changes to false after a validation fails', () => {
-    //   let output: boolean | undefined;
-    //   const v = new Validation(schema);
-    //   const state = defaultState;
-    //   output = v.validate('name', 'bob', state);
-    //   expect(v.isValid).toBe(output);
-    //   expect(v.isValid).toBe(false);
-    // });
+    it('changes to false after a validation fails', () => {
+      let output: boolean | undefined;
+      const v = new Validation(schema);
+      const state = defaultState;
+      output = v.validate('name', 'bob', state);
+      expect(v.isValid).toBe(output);
+      expect(v.isValid).toBe(false);
+    });
 
     it('changes to true after a failed validation passes', () => {
       const v = new Validation(schema);
@@ -167,23 +182,22 @@ describe('useValidation tests', () => {
       expect(typeof output).toBe('undefined');
     });
 
-    // TODO: fix isValid
-    // it('updates the validationState when validation fails', () => {
-    //   const v = new Validation(schema);
-    //   const validationState = {
-    //     ...mockValidationState,
-    //     name: {
-    //       isValid: false,
-    //       error: 'Must be dingo.'
-    //     }
-    //   }
-    //   const name = 'name';
-    //   const value = 'chuck';
-    //   const state = { dingo: true };
-    //   v.validate(name, value, state);
-    //   expect(v.isValid).toBe(false);
-    //   expect(v.validationState).toStrictEqual(validationState)
-    // });
+    it('updates the validationState when validation fails', () => {
+      const v = new Validation(schema);
+      const validationState = {
+        ...mockValidationState,
+        name: {
+          isValid: false,
+          error: 'Must be dingo.'
+        }
+      }
+      const name = 'name';
+      const value = 'chuck';
+      const state = { dingo: true };
+      v.validate(name, value, state);
+      expect(v.isValid).toBe(false);
+      expect(v.validationState).toStrictEqual(validationState)
+    });
 
   });
 
@@ -231,7 +245,7 @@ describe('useValidation tests', () => {
       expect(typeof output).toBe('undefined');
     });
 
-    it('updates the validationState when validation fails', () => {
+    it('does not update the validationState when validation fails', () => {
       const v = new Validation(schema);
       const validationState = {
         ...mockValidationState,
@@ -252,7 +266,7 @@ describe('useValidation tests', () => {
         ...mockValidationState,
       }
       v.validate('name', 'bob', state);
-      // expect(v.isValid).toBe(false);
+      expect(v.isValid).toBe(false);
       v.validateIfTrue('name', 'jack', state);
       expect(v.isValid).toBe(true);
       expect(v.validationState).toStrictEqual(validationState)
@@ -260,65 +274,75 @@ describe('useValidation tests', () => {
 
   });
 
-  // describe('validateOnBlur', () => {
-  //   it('returns a new function', () => {
-  //     const { result } = renderHook(() => useValidation(schema));
-  //     const state = defaultState;
-  //     const handleBlur = v.validateOnBlur(state);
-  //     expect(typeof handleBlur).toBe('function');
-  //   });
+  describe('validateOnBlur', () => {
+    it('returns a new function', () => {
+      const v = new Validation(schema);
+      const state = defaultState;
+      const handleBlur = v.validateOnBlur(state);
+      expect(typeof handleBlur).toBe('function');
+    });
 
-  //   it('updates the valdiation state when called', () => {
-  //     const { result } = renderHook(() => useValidation(schema));
-  //     const state = defaultState;
-  //     const handleBlur = v.validateOnBlur(state);
-  //     const event = {
-  //       target: {
-  //         name: 'name',
-  //         value: 'bob',
-  //         dispatchEvent: new Event('blur'),
-  //       },
-  //     };
-  //     act(() => {
-  //       handleBlur(event as any);
-  //     });
-  //     expect(v.isValid).toBe(false);
-  //   });
+    it('updates the valdiation state when called', () => {
+      const v = new Validation(schema);
+      const state = defaultState;
+      const handleBlur = v.validateOnBlur(state);
+      const event = {
+        target: {
+          name: 'name',
+          value: 'bob',
+          dispatchEvent: new Event('blur'),
+        },
+      };
+      handleBlur(event as any);
+      expect(v.isValid).toBe(false);
+    });
 
-  // });
+  });
 
-  // describe('validateOnChange', () => {
-  //   it('returns a new function', () => {
-  //     const { result } = renderHook(() => useValidation(schema));
-  //     const state = defaultState;
-  //     const onChange = (event: any) => 'bob ross';
-  //     const handleChange = v.validateOnChange(onChange, state);
-  //     expect(typeof handleChange).toBe('function');
-  //   });
+  describe('validateOnChange', () => {
+    it('returns a new function', () => {
+      const v = new Validation(schema);
+      const state = defaultState;
+      const onChange = (event: any) => 'bob ross';
+      const handleChange = v.validateOnChange(onChange, state);
+      expect(typeof handleChange).toBe('function');
+    });
 
-  //   it('updates the valdiation state if true and returns event', () => {
-  //     const { result } = renderHook(() => useValidation(schema));
-  //     const state = defaultState;
-  //     act(() => {
-  //       v.validate('name', 'bob', defaultState);
-  //     });
-  //     expect(v.isValid).toBe(false);
-  //     const onChange = (event: any) => 'bob ross';
-  //     const handleChange = v.validateOnChange(onChange, state);
-  //     const event = {
-  //       target: {
-  //         name: 'name',
-  //         value: 'jack',
-  //         dispatchEvent: new Event('change'),
-  //       },
-  //     };
-  //     let output: any;
-  //     act(() => {
-  //       output = handleChange(event as any);
-  //     });
-  //     expect(v.isValid).toBe(true);
-  //     expect(output).toBe('bob ross')
-  //   });
-  // });
+    it('updates the valdiation state if true and returns event', () => {
+      const v = new Validation(schema);
+      const state = defaultState;
+      v.validate('name', 'bob', defaultState);
+      expect(v.isValid).toBe(false);
+      const onChange = (event: any) => 'bob ross';
+      const handleChange = v.validateOnChange(onChange, state);
+      const event = {
+        target: {
+          name: 'name',
+          value: 'jack',
+          dispatchEvent: new Event('change'),
+        },
+      };
+      let output: any;
+      output = handleChange(event as any);
+      expect(v.isValid).toBe(true);
+      expect(output).toBe('bob ross')
+    });
+  });
+
+  describe('validationErrors', () => {
+    it('returns an empty array', () => {
+      const v = new Validation(schema);
+      expect(v.validationErrors).toStrictEqual([]);
+    });
+
+    it('returns an array of all errors', () => {
+      const v = new Validation(schema);
+      v.validateAll(failingState);
+      expect(v.validationErrors).toStrictEqual([
+        'Cannot be bob.',
+        'Must be 18.'
+      ])
+    });
+  });
 
 });

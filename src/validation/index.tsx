@@ -3,24 +3,36 @@ import {ValidationState, ValidationSchema } from "./validation.hook";
 import {compose, prop, map, all} from "util/utilities";
 
 class Validation<S> {
-  isValid: boolean;
-  schema: ValidationSchema<S>;
-  validationErrors: string[];
-  validationState: ValidationState;
+  private _validationSchema: ValidationSchema<S>;
+  private _validationState: ValidationState;
 
   constructor(props: ValidationSchema<S>) {
-    this.schema = props;
+    this._validationSchema = props;
+    this._validationState = this.createValidationsState(props);
     this.allValid.bind(this);
     this.getError.bind(this);
     this.getFieldValid.bind(this);
-    this.isValid = true;
     this.validate.bind(this);
     this.validateIfTrue.bind(this);
-    this.validationErrors = [];
-    this.validationState = this.createValidationsState(props);
   }
 
-  // -- Build Validation State Object -------------------------------------
+  public get isValid() {
+    return this.allValid(this._validationState);
+  }
+
+  public get validationErrors() {
+    const props = Object.keys(this._validationState);
+    const errors = props.reduce((prev: string[], curr: string) => {
+      const err = this.getError(curr as keyof S);
+      return err ? [...prev, err] : prev;
+    }, []);
+    return errors;
+  }
+
+  public get validationState() {
+    return this._validationState;
+  }
+
   private createValidationsState = (schema: ValidationSchema<S>) => {
     const keys = Object.keys(schema);
     const vState = keys.reduce(
@@ -36,12 +48,11 @@ class Validation<S> {
     return vState;
   };
 
-  // -- helper to update isValid state on change detection ----------------
   private allValid = (state: ValidationState) => {
     const keys = Object.keys(state);
     const valid = keys.reduce((prev: boolean, current: string) => {
       return prev
-        ? this.getFieldValid(current as keyof S, this.validationState)
+        ? this.getFieldValid(current as keyof S, this._validationState)
         : prev
     }, true);
     return valid;
@@ -59,15 +70,52 @@ class Validation<S> {
       (func: Function) => func(value, state),
       prop('validation')
     );
-    const bools: boolean[] = map(runValidator, this.schema[property as string]);
+    const bools: boolean[] = map(runValidator, this._validationSchema[property as string]);
     const isValid: boolean = all(bools);
     const index: number = bools.indexOf(false);
     const error = index > -1
-      ? this.schema[property as string][index].errorMessage
+      ? this._validationSchema[property as string][index].errorMessage
       : '';
     const validations: ValidationState = {};
     validations[property as string] = { isValid, error };
     return validations;
+  };
+
+  /**
+   * Get the current error stored for a property on the validation object.
+   * @param property the name of the property to retrieve
+   * @return string
+   */
+  public getError = (property: keyof S) => {
+    if (property as string in this._validationSchema) {
+      const val = compose(
+        prop('error'),
+        prop(property),
+      );
+      return val(this._validationState);
+    }
+    return '';
+  };
+
+  /**
+   * Get the current valid state stored for a property on the validation object.
+   * If the property does not exist on the validationSchema getFieldValid will 
+   * return true by default.
+   * @param property the name of the property to retrieve
+   * @return boolean
+   */
+  public getFieldValid = (
+    property: keyof S,
+    vState: ValidationState = this._validationState
+  ) => {
+    if (property as string in this._validationSchema) {
+      const val = compose(
+        prop('isValid'),
+        prop(property),
+      );
+      return val(vState);
+    }
+    return true;
   };
 
   /**
@@ -76,14 +124,38 @@ class Validation<S> {
    * @param value any the value to be tested for validation
    * @return boolean | undefined
    */
-  validate = (property: keyof S, value: unknown, state: S) => {
-    if (property in this.schema) {
+  public validate = (property: keyof S, value: unknown, state: S) => {
+    if (property in this._validationSchema) {
       const validations = this.runAllValidators(property, value, state);
-      const updated = { ...this.validationState, ...validations };
-      this.validationState = (updated);
-      return validations[property as string].isValid;
+      const updated = { ...this._validationState, ...validations };
+      this._validationState = (updated);
+      const bool = validations[property as string].isValid;
+      return bool;
     }
   };
+
+  /**
+   * Runs all validations against an object with all values and updates/returns
+   * isValid state. 
+   * @param state any an object that contains all values to be validated
+   * @param props string[] property names to check (optional)
+   * @return boolean
+   */
+  public validateAll = (state: S, props: string[] = Object.keys(this._validationSchema)) => {
+    const newState = props.reduce((acc, property) => {
+      const r = this.runAllValidators(
+        property as keyof S,
+        state[property as keyof S],
+        state
+      );
+      acc = { ...acc, ...r };
+      return acc;
+    }, {});
+    this._validationState = newState;
+    const result = this.allValid(newState);
+    return result;
+  };
+
 
   /**
    * Updates the validation state if the validation succeeds.
@@ -91,12 +163,12 @@ class Validation<S> {
    * @param value any the value to be tested for validation
    * @return boolean | undefined
    */
-  validateIfTrue = (property: keyof S, value: unknown, state: S) => {
-    if (property in this.schema) {
+  public validateIfTrue = (property: keyof S, value: unknown, state: S) => {
+    if (property in this._validationSchema) {
       const validations = this.runAllValidators(property, value, state);
       if (validations[property as string].isValid) {
-        const updated = { ...this.validationState, ...validations };
-        this.validationState = (updated)
+        const updated = { ...this._validationState, ...validations };
+        this._validationState = (updated)
       }
       return validations[property as string].isValid;
     }
@@ -108,7 +180,7 @@ class Validation<S> {
    * @param state the data controlling the form
    * @return function
    */
-  validateOnBlur = (state: S) => {
+  public validateOnBlur = (state: S) => {
     return (event: ChangeEvent<HTMLInputElement>) => {
       const { value, name } = event.target;
       this.validate(name as keyof S, value, state);
@@ -122,79 +194,13 @@ class Validation<S> {
    * @param state the data controlling the form
    * @return function
    */
-  validateOnChange = (onChange: Function, state: S) => {
+  public validateOnChange = (onChange: Function, state: S) => {
     return (event: ChangeEvent<HTMLInputElement>) => {
       const { value, name } = event.target;
       this.validateIfTrue(name as keyof S, value, state);
       return onChange(event);
     }
   }
-
-  /**
-   * Runs all validations against an object with all values and updates/returns
-   * isValid state. 
-   * @param state any an object that contains all values to be validated
-   * @param props string[] property names to check (optional)
-   * @return boolean
-   */
-  validateAll = (state: S, props: string[] = Object.keys(this.schema)) => {
-    const newState = props.reduce((acc, property) => {
-      const r = this.runAllValidators(
-        property as keyof S,
-        state[property as keyof S],
-        state
-      );
-      acc = { ...acc, ...r };
-      return acc;
-    }, {});
-    this.validationState = newState;
-    const result = this.allValid(newState);
-    this.isValid = result;
-    return result;
-  };
-
-  /**
-   * Get the current error stored for a property on the validation object.
-   * @param property the name of the property to retrieve
-   * @return string
-   */
-  getError = (property: keyof S) => {
-    if (property as string in this.schema) {
-      const val = compose(
-        prop('error'),
-        prop(property),
-      );
-      return val(this.validationState);
-    }
-    return '';
-  };
-
-  /**
-   * Get the current valid state stored for a property on the validation object.
-   * If the property does not exist on the validationSchema getFieldValid will 
-   * return true by default.
-   * @param property the name of the property to retrieve
-   * @return boolean
-   */
-  getFieldValid = (
-    property: keyof S,
-    vState: ValidationState = this.validationState
-  ) => {
-    if (property as string in this.schema) {
-      const val = compose(
-        prop('isValid'),
-        prop(property),
-      );
-      return val(vState);
-    }
-    return true;
-  };
-
-
-
-  // -- array of all current validation errors ----------------------------
-  // validationErrors = map(this.getError, Object.keys(this.validationState));
-
 }
 
 export default Validation;

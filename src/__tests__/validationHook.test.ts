@@ -25,6 +25,7 @@ const schema: ValidationSchema<any> = {
     }
   ]
 };
+
 const mockValidationState: ValidationState = {
   name: {
     isValid: true,
@@ -41,9 +42,11 @@ const defaultState = {
   dingo: false,
   age: 42,
 };
+
 const failingState = {
   ...defaultState,
   name: 'bob',
+  age: 15,
 };
 
 describe('useValidation tests', () => {
