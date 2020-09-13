@@ -6,16 +6,6 @@ class Validation<S> {
   private _validationSchema: ValidationSchema<S>;
   private _validationState: ValidationState;
 
-  constructor(props: ValidationSchema<S>) {
-    this._validationSchema = props;
-    this._validationState = this.createValidationsState(props);
-    this.allValid.bind(this);
-    this.getError.bind(this);
-    this.getFieldValid.bind(this);
-    this.validate.bind(this);
-    this.validateIfTrue.bind(this);
-  }
-
   public get isValid() {
     return this.allValid(this._validationState);
   }
@@ -31,6 +21,16 @@ class Validation<S> {
 
   public get validationState() {
     return this._validationState;
+  }
+
+  constructor(props: ValidationSchema<S>) {
+    this._validationSchema = props;
+    this._validationState = this.createValidationsState(props);
+    this.allValid.bind(this);
+    this.getError.bind(this);
+    this.getFieldValid.bind(this);
+    this.validate.bind(this);
+    this.validateIfTrue.bind(this);
   }
 
   private createValidationsState = (schema: ValidationSchema<S>) => {
