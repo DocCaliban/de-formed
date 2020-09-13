@@ -1,3 +1,5 @@
+[![Coverage Status](https://img.shields.io/coveralls/github/prescottbreeden/de-formed/master)](https://codecov.io/gh/prescottbreeden/de-formed/branch/master)
+
 # De-Formed Validations
 De-Formed Validations is an unopinionated API to manage form validations in JavaScript.
 
