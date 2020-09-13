@@ -1,13 +1,11 @@
 # De-Formed Validations
-De-Formed Validations is an unopinionated library to manage form validations.
+De-Formed Validations is an unopinionated API to manage form validations in JavaScript.
 
-The goal of de-formed is to provide a straight forward validation library. With de-formed, just define as many functions as you find necessary, and then execute them on whichever events you choose. Very little attempt has been made to abstract the implementation of this library from the developer giving it a function-based, modular approach to design validation patterns that meet your requirements.
-
-De-Formed takes a simple schema definition and then provides you with either a JavaScript Object or React Hook containing read-only objects and functions that can be imported anywhere to handle validation related tasks. Developers can design the validation behavior catered to their specific needs without having to worry about managing the validation data themselves.
+De-Formed takes a simple schema definition and then provides you with either a JavaScript Object or React Hook containing read-only objects and functions to handle validation-related tasks. Just define as many functions as you find necessary and then execute them on whichever events you choose. Very little attempt has been made to abstract the implementation of this API from the developer giving it a function-based, modular approach to design validation patterns that meet your requirements without worrying about managing the validation data itself.
 
 ## Why use De-Formed?
 1) Maintain separation between form logic, presentation logic, and validation logic.
-2) Easily Customize validation behavior in contextual and dynamic situations.
+2) Easily customize validation behavior in contextual and dynamic situations.
 3) Modular approach makes reusing and nested validations a snap.
 4) Light-weight and easy to test.
 
