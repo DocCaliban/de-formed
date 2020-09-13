@@ -5,17 +5,19 @@ import {compose, prop, map, all} from "util/utilities";
 class Validation<S> {
   isValid: boolean;
   schema: ValidationSchema<S>;
-  state: ValidationState;
+  validationErrors: string[];
+  validationState: ValidationState;
 
   constructor(props: ValidationSchema<S>) {
-    this.isValid = true;
-    this.state = this.createValidationsState(props);
     this.schema = props;
-    this.validate.bind(this);
-    this.validateIfTrue.bind(this);
     this.allValid.bind(this);
     this.getError.bind(this);
     this.getFieldValid.bind(this);
+    this.isValid = true;
+    this.validate.bind(this);
+    this.validateIfTrue.bind(this);
+    this.validationErrors = [];
+    this.validationState = this.createValidationsState(props);
   }
 
   // -- Build Validation State Object -------------------------------------
@@ -39,7 +41,7 @@ class Validation<S> {
     const keys = Object.keys(state);
     const valid = keys.reduce((prev: boolean, current: string) => {
       return prev
-        ? this.getFieldValid(current as keyof S, this.state)
+        ? this.getFieldValid(current as keyof S, this.validationState)
         : prev
     }, true);
     return valid;
@@ -77,8 +79,8 @@ class Validation<S> {
   validate = (property: keyof S, value: unknown, state: S) => {
     if (property in this.schema) {
       const validations = this.runAllValidators(property, value, state);
-      const updated = { ...this.state, ...validations };
-      this.state = (updated);
+      const updated = { ...this.validationState, ...validations };
+      this.validationState = (updated);
       return validations[property as string].isValid;
     }
   };
@@ -93,8 +95,8 @@ class Validation<S> {
     if (property in this.schema) {
       const validations = this.runAllValidators(property, value, state);
       if (validations[property as string].isValid) {
-        const updated = { ...this.state, ...validations };
-        this.state = (updated)
+        const updated = { ...this.validationState, ...validations };
+        this.validationState = (updated)
       }
       return validations[property as string].isValid;
     }
@@ -145,7 +147,7 @@ class Validation<S> {
       acc = { ...acc, ...r };
       return acc;
     }, {});
-    this.state = newState;
+    this.validationState = newState;
     const result = this.allValid(newState);
     this.isValid = result;
     return result;
@@ -162,7 +164,7 @@ class Validation<S> {
         prop('error'),
         prop(property),
       );
-      return val(this.state);
+      return val(this.validationState);
     }
     return '';
   };
@@ -176,7 +178,7 @@ class Validation<S> {
    */
   getFieldValid = (
     property: keyof S,
-    vState: ValidationState = this.state
+    vState: ValidationState = this.validationState
   ) => {
     if (property as string in this.schema) {
       const val = compose(
@@ -191,7 +193,7 @@ class Validation<S> {
 
 
   // -- array of all current validation errors ----------------------------
-  // validationErrors = map(this.getError, Object.keys(this.state));
+  // validationErrors = map(this.getError, Object.keys(this.validationState));
 
 }
 
