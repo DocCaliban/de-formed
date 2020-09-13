@@ -1,5 +1,3 @@
-![Coverage Status](https://img.shields.io/codecov/c/github/prescottbreeden/de-formed?token=2f9cc995-5f13-4b1b-b08f-03e6b2198c0f)
-
 # De-Formed Validations
 De-Formed Validations is an unopinionated API to manage form validations in JavaScript.
 
