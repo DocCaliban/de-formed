@@ -1,14 +1,14 @@
 # De-Formed Validations
 De-Formed Validations is an unopinionated library to manage validations in [React](https://reactjs.org/).
 
-The goal of de-formed is to provide a straight forward validate library. With de-formed, just define as many functions as you find necessary, and then execute them on whichever events you choose. Very little attempt has been made to abstract the implementation of this library from the developer giving it a function-based, Lego-like approach to design validation patterns that meet your requirements.
+The goal of de-formed is to provide a straight forward validation library. With de-formed, just define as many functions as you find necessary, and then execute them on whichever events you choose. Very little attempt has been made to abstract the implementation of this library from the developer giving it a function-based, modular approach to design validation patterns that meet your requirements.
 
-De-Formed takes a simple schema definition and then provides you with either a Class or Hook (dealer's choice) containing read-only objects and functions that can be imported anywhere to handle validation related tasks. Developers can design the validation behavior catered to their specific needs without having to worry about managing the validation data themselves.
+De-Formed takes a simple schema definition and then provides you with either a JavaScript Object or React Hook containing read-only objects and functions that can be imported anywhere to handle validation related tasks. Developers can design the validation behavior catered to their specific needs without having to worry about managing the validation data themselves.
 
 ## Why use De-Formed?
 1) Maintain separation between form logic, presentation logic, and validation logic.
 2) Easily Customize validation behavior in contextual and dynamic situations.
-3) Lego-style approach makes reusing and nested validations a snap.
+3) Modular approach makes reusing and nested validations a snap.
 4) Light-weight and easy to test.
 
 ## Usage
