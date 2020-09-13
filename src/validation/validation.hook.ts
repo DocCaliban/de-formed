@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { ChangeEvent, useState, useEffect, useCallback } from 'react';
 import { compose, prop, map, all } from 'util/utilities';
 
 interface ValidationFunction<S> {
@@ -21,33 +21,18 @@ export interface ValidationState {
   };
 };
 
-export interface ValidationObject {
-  getError: (property: string) => string;
-  getFieldValid: (property: string) => boolean;
+export interface ValidationObject<S> {
+  getError: (property: keyof S) => string;
+  getFieldValid: (property: keyof S) => boolean;
   isValid: boolean;
-  validate: (property: string, value: unknown, state?: any) => boolean | undefined;
-  validateAll: (state: any) => boolean;
-  validateIfTrue: (property: string, value: unknown, state?: any) => boolean | undefined;
-  validateOnBlur: (state: any) => (event: any) => any;
-  validateOnChange: (onChange: (event: any) => any, state: any) => (event: any) => any;
+  validate: (property: keyof S, value: unknown, state: S) => boolean | undefined;
+  validateAll: (state: S) => boolean;
+  validateIfTrue: (property: keyof S, value: unknown, state: S) => boolean | undefined;
+  validateOnBlur: (state: S) => (event: ChangeEvent<HTMLInputElement>) => unknown;
+  validateOnChange: (onChange: (event: ChangeEvent<HTMLInputElement>) => unknown, state: S) => (event: ChangeEvent<HTMLInputElement>) => unknown;
   validationErrors: string[];
   validationState: ValidationState;
 };
-  // -- Build Validation State Object -------------------------------------
-  export const createValidationsState = (schema: ValidationSchema<any>) => {
-    const keys = Object.keys(schema);
-    const vState = keys.reduce(
-      (prev: any, item: string) => {
-        prev[item] = {
-          isValid: true,
-          error: ''
-        };
-        return prev;
-      },
-      {}
-    );
-    return vState;
-  };
 
 /**
  * A hook that can be used to generate an object containing functions and
@@ -58,7 +43,7 @@ export interface ValidationObject {
 export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
 
   // -- Build Validation State Object -------------------------------------
-  const createValidationsState = (schema: ValidationSchema<any>) => {
+  const createValidationsState = (schema: ValidationSchema<S>) => {
     const keys = Object.keys(schema);
     const vState = keys.reduce(
       (prev: any, item: string) => {
@@ -86,20 +71,20 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
    * @param value any the value to be tested for validation
    * @return true/false validation
    */
-  const runAllValidators = (property: string, value: any, state?: S) => {
+  const runAllValidators = (property: keyof S, value: any, state: S) => {
     const val = typeof value === 'string' ? value.trim() : value;
     const runValidator = compose(
       (func: Function) => func(val, state),
       prop('validation')
     );
-    const bools: boolean[] = map(runValidator, validationSchema[property]);
+    const bools: boolean[] = map(runValidator, validationSchema[property as string]);
     const isValid: boolean = all(bools);
     const index: number = bools.indexOf(false);
     const error = index > -1
-      ? validationSchema[property][index].errorMessage
+      ? validationSchema[property as string][index].errorMessage
       : '';
     const validations: ValidationState = {};
-    validations[property] = { isValid, error };
+    validations[property as string] = { isValid, error };
     return validations;
   };
 
@@ -109,12 +94,12 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
    * @param value any the value to be tested for validation
    * @return boolean | undefined
    */
-  const validate = (property: string, value: unknown, state?: S) => {
+  const validate = (property: keyof S, value: unknown, state: S) => {
     if (property in validationSchema) {
       const validations = runAllValidators(property, value, state);
       const updated = { ...validationState, ...validations };
       setValidationState(updated);
-      return validations[property].isValid;
+      return validations[property as string].isValid;
     }
   };
 
@@ -124,13 +109,13 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
    * @param value any the value to be tested for validation
    * @return boolean | undefined
    */
-  const validateIfTrue = (property: string, value: unknown, state?: S) => {
+  const validateIfTrue = (property: keyof S, value: unknown, state: S) => {
     if (property in validationSchema) {
       const validations = runAllValidators(property, value, state);
-      if (validations[property].isValid) {
+      if (validations[property as string].isValid) {
         setValidationState({ ...validationState, ...validations });
       }
-      return validations[property].isValid;
+      return validations[property as string].isValid;
     }
   };
   /**
@@ -139,9 +124,10 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
    * @param state the data controlling the form
    * @return function
    */
-  const validateOnBlur = (state: any) => ((event: any) => {
+  const validateOnBlur = (state: S) => ((event: ChangeEvent<HTMLInputElement>) => {
+    console.log(event);
       const { value, name } = event.target;
-      validate(name, value, state);
+      validate(name as keyof S, value, state);
     }
   );
 
@@ -152,10 +138,10 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
    * @param state the data controlling the form
    * @return function
    */
-  const validateOnChange = (onChange: Function, state: any) => (
-    (event: any) => {
+  const validateOnChange = (onChange: Function, state: S) => (
+    (event: ChangeEvent<HTMLInputElement>) => {
       const { value, name } = event.target;
-      validateIfTrue(name, value, state);
+      validateIfTrue(name as keyof S, value, state);
       return onChange(event);
     }
   );
@@ -171,8 +157,8 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
     state: S,
     props: string[] = Object.keys(validationSchema)
   ) => {
-    const newState = props.reduce((acc: any, property: string) => {
-      const r = runAllValidators(property, state[property as keyof S], state);
+    const newState = props.reduce((acc, property) => {
+      const r = runAllValidators(property as keyof S, state[property as keyof S], state);
       acc = { ...acc, ...r };
       return acc;
     }, {});

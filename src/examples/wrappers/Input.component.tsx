@@ -1,18 +1,18 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { ValidationObject } from 'validation/validation.hook';
 import { randomString, prop } from 'util/utilities';
 
-type InputProps = {
+type InputProps<S> = {
   disabled?: boolean;
   label: string;
-  name: string;
+  name: keyof S;
   onChange?: (event: any) => void;
   state: any;
   type?: string;
-  v?: ValidationObject;
+  v?: ValidationObject<S>;
 }
 
-export const Input: FC<InputProps> = (props) => {
+export function Input <S>(props: InputProps<S>) {
   const { label, onChange, name, state, type, v } = props;
 
   if (v) {
@@ -23,9 +23,9 @@ export const Input: FC<InputProps> = (props) => {
     };
 
     const validationProps = { 
-      key: name,
-      id: name,
-      name,
+      key: name as string,
+      id: name as string,
+      name: name as string,
       onBlur: () => v.validate(name, prop(name, state), state),
       onChange,
       pattern: getPattern(state[name]),
@@ -35,7 +35,7 @@ export const Input: FC<InputProps> = (props) => {
 
     return (
       <React.Fragment>
-        <label htmlFor={name}>{label}</label>
+        <label htmlFor={name as string}>{label}</label>
         <br />
         <input {...validationProps} />
         <p style={{ color: 'red' }}>{v.getError(name)}</p>
@@ -44,16 +44,16 @@ export const Input: FC<InputProps> = (props) => {
   }
 
   const nonValidationProps = { 
-    key: name,
-    id: name,
-    name,
+    key: name as string,
+    id: name as string,
+    name: name as string,
     onChange,
     value: state[name],
     type: type,
   };
   return (
     <React.Fragment>
-      <label htmlFor={name}>{label}</label>
+      <label htmlFor={name as string}>{label}</label>
       <br />
       <input {...nonValidationProps} />
     </React.Fragment>
