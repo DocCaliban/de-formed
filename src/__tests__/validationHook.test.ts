@@ -1,5 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import { useValidation, ValidationSchema, ValidationState } from 'validation/validation.hook';
+import { useValidation } from 'validation/validation.hook';
+import { ValidationSchema, ValidationState } from 'types';
 
 const schema: ValidationSchema<any> = {
   name: [
@@ -15,15 +16,15 @@ const schema: ValidationSchema<any> = {
       errorMessage: 'Must be dingo.',
       validation: (val: string, state: any) => {
         return state.dingo ? val === 'dingo' : true;
-      }
+      },
     },
   ],
   age: [
     {
       errorMessage: 'Must be 18',
       validation: (val: number) => val >= 18,
-    }
-  ]
+    },
+  ],
 };
 
 const mockValidationState: ValidationState = {
@@ -34,7 +35,7 @@ const mockValidationState: ValidationState = {
   age: {
     isValid: true,
     error: '',
-  }
+  },
 };
 
 const defaultState = {
@@ -50,7 +51,6 @@ const failingState = {
 };
 
 describe('useValidation tests', () => {
-
   it('should be defined', () => {
     expect(useValidation).toBeDefined();
   });
@@ -78,6 +78,7 @@ describe('useValidation tests', () => {
       'isValid',
       'validate',
       'validateAll',
+      'validateCustom',
       'validateIfTrue',
       'validateOnBlur',
       'validateOnChange',
@@ -202,9 +203,9 @@ describe('useValidation tests', () => {
         ...mockValidationState,
         name: {
           isValid: false,
-          error: 'Must be dingo.'
-        }
-      }
+          error: 'Must be dingo.',
+        },
+      };
       const name = 'name';
       const value = 'chuck';
       const state = { dingo: true };
@@ -212,9 +213,8 @@ describe('useValidation tests', () => {
         result.current.validate(name, value, state);
       });
       expect(result.current.isValid).toBe(false);
-      expect(result.current.validationState).toStrictEqual(validationState)
+      expect(result.current.validationState).toStrictEqual(validationState);
     });
-
   });
 
   describe('validateAll', () => {
@@ -243,6 +243,91 @@ describe('useValidation tests', () => {
         output = result.current.validateAll(failingState);
       });
       expect(output).toBe(false);
+    });
+  });
+
+  describe('validateCustom', () => {
+    const weirdSchema = {
+      namesAreAllBob: [
+        {
+          errorMessage: 'Names all have to be bob.',
+          validation: (names: string[]) => {
+            return names.reduce((acc: boolean, name: string) => {
+              return acc ? name === 'bob' : false;
+            }, true);
+          },
+        },
+      ],
+      namesAreAllDingo: [
+        {
+          errorMessage: 'Names all have to be dino if dingo is true.',
+          validation: (names: string[], object: any) => {
+            return names.reduce((acc: boolean, name: string) => {
+              if (object.dingo === true) {
+                return acc ? name === 'dingo' : false;
+              }
+              return true;
+            }, true);
+          },
+        },
+      ],
+    };
+    const validNames = ['bob', 'bob', 'bob'];
+    it('returns a boolean', () => {
+      const { result } = renderHook(() => useValidation(weirdSchema));
+      let output: boolean | undefined;
+      act(() => {
+        output = result.current.validateCustom([
+          { key: 'namesAreAllBob', value: validNames },
+        ]);
+      });
+      expect(typeof output).toBe('boolean');
+    });
+
+    it('returns true if validations pass', () => {
+      const { result } = renderHook(() => useValidation(weirdSchema));
+      let output: boolean | undefined;
+      act(() => {
+        output = result.current.validateCustom([
+          { key: 'namesAreAllBob', value: validNames },
+        ]);
+      });
+      expect(output).toBe(true);
+    });
+
+    it('returns false if validations fail', () => {
+      const { result } = renderHook(() => useValidation(weirdSchema));
+      const invalidNames = ['jack', 'bob', 'bob'];
+      let output: boolean | undefined;
+      act(() => {
+        output = result.current.validateCustom([
+          { key: 'namesAreAllBob', value: invalidNames },
+        ]);
+      });
+      expect(output).toBe(false);
+    });
+
+    it('updates validation state', () => {
+      const { result } = renderHook(() => useValidation(weirdSchema));
+      const invalidNames = ['jack', 'bob', 'bob'];
+      act(() => {
+        result.current.validateCustom([
+          { key: 'namesAreAllBob', value: invalidNames },
+        ]);
+      });
+      expect(result.current.isValid).toBe(false);
+    });
+
+    it('takes an optional object for second argument', () => {
+      const { result } = renderHook(() => useValidation(weirdSchema));
+      const validNames = ['dingo', 'dingo', 'dingo'];
+      act(() => {
+        result.current.validateCustom(
+          [{ key: 'namesAreAllDingo', value: validNames }],
+          { dingo: true }
+        );
+      });
+      expect(result.current.isValid).toBe(true);
     });
   });
 
@@ -275,7 +360,7 @@ describe('useValidation tests', () => {
       const { result } = renderHook(() => useValidation(schema));
       const validationState = {
         ...mockValidationState,
-      }
+      };
       const name = 'name';
       const value = 'chuck';
       const state = { dingo: true };
@@ -283,7 +368,7 @@ describe('useValidation tests', () => {
         result.current.validateIfTrue(name, value, state);
       });
       expect(result.current.isValid).toBe(true);
-      expect(result.current.validationState).toStrictEqual(validationState)
+      expect(result.current.validationState).toStrictEqual(validationState);
     });
 
     it('updates the validationState when an invalid validation succeeds', () => {
@@ -291,7 +376,7 @@ describe('useValidation tests', () => {
       const state = defaultState;
       const validationState = {
         ...mockValidationState,
-      }
+      };
       act(() => {
         result.current.validate('name', 'bob', state);
       });
@@ -300,9 +385,8 @@ describe('useValidation tests', () => {
         result.current.validateIfTrue('name', 'jack', state);
       });
       expect(result.current.isValid).toBe(true);
-      expect(result.current.validationState).toStrictEqual(validationState)
+      expect(result.current.validationState).toStrictEqual(validationState);
     });
-
   });
 
   describe('validateOnBlur', () => {
@@ -329,7 +413,6 @@ describe('useValidation tests', () => {
       });
       expect(result.current.isValid).toBe(false);
     });
-
   });
 
   describe('validateOnChange', () => {
@@ -362,8 +445,7 @@ describe('useValidation tests', () => {
         output = handleChange(event as any);
       });
       expect(result.current.isValid).toBe(true);
-      expect(output).toBe('bob ross')
+      expect(output).toBe('bob ross');
     });
   });
-
 });
