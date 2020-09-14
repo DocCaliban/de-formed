@@ -1,9 +1,8 @@
 import React, { useState, FC } from 'react';
-import {Dog} from 'examples/types';
-import {DogValidation} from 'examples/validationSchemas/Dog.validation';
+import { Dog } from 'examples/types';
+import { DogValidation } from 'examples/validationSchemas/Dog.validation';
 
 export const Example1: FC = () => {
-
   const [state, setState] = useState<Dog>({
     name: '',
     breed: '',
@@ -48,7 +47,7 @@ export const Example1: FC = () => {
         />
         {v.getError('breed') && <p>{v.getError('breed')}</p>}
       </div>
-      <button disabled={!v.isValid}>Submit</button>
+      <button>Submit</button>
     </form>
   );
-}
+};

@@ -1,6 +1,6 @@
 import React from 'react';
-import { ValidationObject } from 'validation/validation.hook';
 import { randomString, prop } from 'util/utilities';
+import { ValidationObject } from 'types';
 
 type InputProps<S> = {
   disabled?: boolean;
@@ -10,19 +10,17 @@ type InputProps<S> = {
   state: any;
   type?: string;
   v?: ValidationObject<S>;
-}
+};
 
-export function Input <S>(props: InputProps<S>) {
+export function Input<S>(props: InputProps<S>) {
   const { label, onChange, name, state, type, v } = props;
 
   if (v) {
     const getPattern = (value: any) => {
-      return v.getFieldValid(name)
-        ? `${value}`
-        : `${randomString()}`
+      return v.getFieldValid(name) ? `${value}` : `${randomString()}`;
     };
 
-    const validationProps = { 
+    const validationProps = {
       key: name as string,
       id: name as string,
       name: name as string,
@@ -43,7 +41,7 @@ export function Input <S>(props: InputProps<S>) {
     );
   }
 
-  const nonValidationProps = { 
+  const nonValidationProps = {
     key: name as string,
     id: name as string,
     name: name as string,
@@ -58,4 +56,4 @@ export function Input <S>(props: InputProps<S>) {
       <input {...nonValidationProps} />
     </React.Fragment>
   );
-};
+}

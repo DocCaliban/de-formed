@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
-import {Dog} from 'examples/types';
-import {doggieValidation} from './classSchema';
-import Validation from 'validation';
+import React, { Component } from 'react';
+import { Dog } from 'examples/types';
+import { doggieValidation } from './classSchema';
+import Validation from 'validation/ValidationState';
 
 export class ClassExample extends Component {
   state: {
     name: string;
     breed: string;
-  }
+  };
   constructor(props: any) {
     super(props);
     this.state = {
