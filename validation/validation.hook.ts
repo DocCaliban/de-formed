@@ -1,6 +1,6 @@
 import { ChangeEvent, useState, useEffect, useCallback } from 'react';
-import { ValidationSchema, ValidationState, CustomValidation } from 'types';
-import { compose, prop, map, all } from 'util/utilities';
+import { ValidationSchema, ValidationState, CustomValidation } from '../types';
+import { compose, prop, map, all } from '../util/utilities';
 
 /**
  * A hook that can be used to generate an object containing functions and

@@ -1,6 +1,6 @@
 import { ChangeEvent } from 'react';
-import { ValidationSchema, ValidationState, CustomValidation } from 'types';
-import { compose, prop, map, all } from 'util/utilities';
+import { ValidationSchema, ValidationState, CustomValidation } from '../types';
+import { compose, prop, map, all } from '../util/utilities';
 
 class Validation<S> {
   private _validationSchema: ValidationSchema<S>;

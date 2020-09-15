@@ -1,12 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -21,6 +16,13 @@
     "jsx": "react"
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "react-app-env.d.ts",
+    "setupTests.ts",
+    "index.tsx",
+    "validation",
+    "util",
+    "types",
+    "__tests__"
   ]
 }
