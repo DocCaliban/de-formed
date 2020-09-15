@@ -1,5 +1,5 @@
 import { ValidationSchema, ValidationState } from '../types';
-import Validation from '../validation/ValidationState';
+import { Validation } from '../validation/ValidationState';
 
 const schema: ValidationSchema<any> = {
   name: [

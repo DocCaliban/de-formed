@@ -69,6 +69,7 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
       setValidationState(updated);
       return validations[property as string].isValid;
     }
+    return undefined;
   };
 
   /**
@@ -106,6 +107,7 @@ export const useValidation = <S>(validationSchema: ValidationSchema<S>) => {
       }
       return validations[property as string].isValid;
     }
+    return undefined;
   };
   /**
    * Create a new onBlur function that calls validate on a property matching the
