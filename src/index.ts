@@ -1,2 +1,2 @@
-export { useValidation } from './validation/validation.hook';
-export { Validation } from './validation/ValidationState';
+export { useValidation } from 'src/validation/validation.hook';
+export { Validation } from 'src/validation/ValidationState';
