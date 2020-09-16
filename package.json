@@ -1,5 +1,5 @@
 {
-  "name": "de-formed-validations",
+  "name": "@cnorris/de-formed-validations",
   "version": "1.0.0",
   "author": "prescottbreeden",
   "description": "Validations without the bloat.",
