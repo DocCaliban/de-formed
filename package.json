@@ -1,17 +1,14 @@
 {
-  "name": "de-formed-validations-2",
+  "name": "de-formed-validations-3",
   "version": "1.1.0",
   "author": "prescottbreeden",
   "description": "Validations without the bloat.",
   "license": "MIT",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "engines": {
     "node": ">=8",
     "npm": ">=5"
-  },
-  "peerDependencies": {
-    "react": ">= 16.8.0",
-    "react-dom": ">= 16.8.0"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.10.4",
@@ -53,9 +50,6 @@
       "tsx",
       "js"
     ]
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "prettier": {
     "singleQuote": true,
