@@ -1,4 +1,3 @@
-
 /**
  * Creates a random 7 character string.
  * @return string
@@ -8,7 +7,7 @@ export const randomString = () => Math.random().toString(36).substring(7);
 /**
  *  compose :: ((a -> b), (b -> c),  ..., (y -> z)) -> a -> z
  */
-export const compose = (...fns: Function[]) => (...args: any[]) => 
+export const compose = (...fns: Function[]) => (...args: any[]) =>
   fns.reduceRight((res, fn) => [fn.call(null, ...res)], args)[0];
 
 /**
@@ -23,9 +22,7 @@ export const deepEqual = (a: unknown, b: unknown) => {
 
 export const upsertItem = <T>(items: T[], data: Partial<T>, index: number) => {
   return items.map((item: T, itemIndex: number) => {
-    return itemIndex === index 
-      ? { ...item, ...data }
-      : { ...item };
+    return itemIndex === index ? { ...item, ...data } : { ...item };
   });
 };
 
@@ -67,12 +64,10 @@ export const reduce = curry((f: any, x: any, xs: any[]) => xs.reduce(f, x));
 /**
  *  prop :: String -> {a} -> [a | Undefined]
  */
-export const prop = curry((p: string, obj: any) => obj ? obj[p] : undefined);
+export const prop = curry((p: string, obj: any) => (obj ? obj[p] : undefined));
 
 const reduceTruthy = (prev: any, current: any) => {
-  return !!current
-    ? prev
-    : false;
+  return !!current ? prev : false;
 };
 
 export const all = reduce(reduceTruthy, true);

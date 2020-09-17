@@ -1,8 +1,8 @@
 import { ChangeEvent } from 'react';
-import { ValidationSchema, ValidationState, CustomValidation } from 'types';
-import { compose, prop, map, all } from 'util/utilities';
+import { ValidationSchema, ValidationState, CustomValidation } from '../types';
+import { compose, prop, map, all } from '../util/utilities';
 
-class Validation<S> {
+export class Validation<S> {
   private _validationSchema: ValidationSchema<S>;
   private _validationState: ValidationState;
 
@@ -122,6 +122,7 @@ class Validation<S> {
       const bool = validations[property as string].isValid;
       return bool;
     }
+    return undefined;
   };
 
   /**
@@ -185,6 +186,7 @@ class Validation<S> {
       }
       return validations[property as string].isValid;
     }
+    return undefined;
   };
 
   /**
@@ -215,5 +217,3 @@ class Validation<S> {
     };
   };
 }
-
-export default Validation;

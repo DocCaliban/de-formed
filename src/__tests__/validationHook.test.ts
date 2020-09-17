@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import { useValidation } from 'validation/validation.hook';
-import { ValidationSchema, ValidationState } from 'types';
+import { useValidation } from '../validation/validation.hook';
+import { ValidationSchema, ValidationState } from '../types';
 
 const schema: ValidationSchema<any> = {
   name: [

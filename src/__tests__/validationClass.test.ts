@@ -1,5 +1,5 @@
-import { ValidationSchema, ValidationState } from 'types';
-import Validation from 'validation/ValidationState';
+import { ValidationSchema, ValidationState } from '../types';
+import { Validation } from '../validation/ValidationState';
 
 const schema: ValidationSchema<any> = {
   name: [
@@ -72,8 +72,6 @@ describe('useValidation tests', () => {
     const v = new Validation(schema);
     expect(v.validationState).toStrictEqual(mockValidationState);
     expect(Object.keys(v)).toStrictEqual([
-      '_validationSchema',
-      '_validationState',
       'createValidationsState',
       'allValid',
       'runAllValidators',
@@ -85,6 +83,8 @@ describe('useValidation tests', () => {
       'validateIfTrue',
       'validateOnBlur',
       'validateOnChange',
+      '_validationSchema',
+      '_validationState',
     ]);
   });
 
